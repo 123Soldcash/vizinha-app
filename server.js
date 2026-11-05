@@ -343,6 +343,9 @@ app.delete('/api/morador/conta', authenticate, (req, res) => {
     res.json({ success: true });
   });
 });
-
+   // Rota para servir o index.html
+   app.get('/', (req, res) => {
+       res.sendFile(path.join(__dirname, 'public', 'index.html'));
+   });
 const PORT = process.env.PORT || 3000;
    app.listen(PORT, '0.0.0.0', () => console.log(`Servidor rodando na porta ${PORT}`));
