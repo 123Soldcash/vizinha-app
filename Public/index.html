@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vizinha - Villagio Bourbon</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', sans-serif; }
+    body { background: #f7f9fc; color: #2d3748; min-height: 100vh; }
+    
+    :root {
+      --teal: #4FB8B8;
+      --teal-dark: #3a9a9a;
+      --coral: #FF8C7A;
+      --coral-dark: #e67565;
+    }
+    
+    .app-header {
+      background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
+      color: white;
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(79,184,184,0.3);
+    }
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+    .header-logo { 
+      width: 48px; 
+      height: 48px; 
+      border-radius: 12px; 
+      background: white; 
+      padding: 4px;
+      flex-shrink: 0;
+    }
+    .header-title-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .header-title { 
+      font-size: 24px; 
+      font-weight: 800; 
+      margin: 0;
+      line-height: 1.1;
+    }
+    .header-frase {
+      font-family: 'Caveat', cursive;
+      font-size: 18px;
+      font-weight: 500;
+      color: #fff5f3;
+      margin-top: 2px;
+      transform: rotate(-1deg);
+      white-space: nowrap;
+    }
+    .header-actions { 
+      display: flex; 
+      gap: 8px; 
+      flex-shrink: 0;
+      align-items: center;
+    }
+    .btn-admin { background: var(--coral); color: white; border: none; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 12px; cursor: pointer; }
+    .btn-logout { background: rgba(255,255,255,0.2); color: white; border: none; padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
+    
+    .container { max-width: 600px; margin: 0 auto; padding: 16px; padding-bottom: 80px; }
+    
+    .search-box {
+      background: white;
+      border-radius: 24px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .search-box input { border: none; outline: none; flex: 1; font-size: 15px; background: transparent; }
+    
+    .btn-cadastrar {
+      background: var(--coral);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 24px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(255,140,122,0.3);
+    }
+    
+    .grupo-header {
+      padding: 14px 18px;
+      border-radius: 16px;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      margin: 14px 0 10px 0;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .grupo-header .seta { transition: transform 0.3s; }
+    .grupo-header.collapsed .seta { transform: rotate(-90deg); }
+    
+    .grupo-obras { background: linear-gradient(135deg, #d97706, #f59e0b); }
+    .grupo-saude { background: linear-gradient(135deg, #dc2626, #ef4444); }
+    .grupo-casa { background: linear-gradient(135deg, var(--teal), #5ec4c4); }
+    .grupo-beleza { background: linear-gradient(135deg, #db2777, #ec4899); }
+    .grupo-tech { background: linear-gradient(135deg, #7c3aed, #8b5cf6); }
+    .grupo-pets { background: linear-gradient(135deg, #059669, #10b981); }
+    .grupo-transporte { background: linear-gradient(135deg, #475569, #64748b); }
+    .grupo-alimentacao { background: linear-gradient(135deg, #059669, #10b981); }
+    .grupo-familia { background: linear-gradient(135deg, #475569, #64748b); }
+    .grupo-outros { background: linear-gradient(135deg, #6b7280, #9ca3af); }
+    
+    .grupo-content { overflow: hidden; transition: max-height 0.3s ease-out; max-height: 2000px; }
+    .grupo-content.collapsed { max-height: 0 !important; }
+    
+    .card-categoria {
+      background: white;
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      border-left: 5px solid var(--teal);
+    }
+    .card-categoria .icone {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    .card-categoria .info { flex: 1; }
+    .card-categoria .nome { font-weight: 700; font-size: 15px; }
+    .card-categoria .contador { font-size: 13px; color: #718096; }
+    
+    .card-prestador {
+      background: white;
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      border-left: 5px solid var(--coral);
+    }
+    .card-prestador .info { flex: 1; }
+    .card-prestador .nome { font-weight: 700; font-size: 15px; }
+    .card-prestador .sub { font-size: 13px; color: #718096; }
+    
+    .btn-voltar {
+      background: white;
+      border: 2px solid #e2e8f0;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    
+    .card-detalhe {
+      background: white;
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .btn-whats {
+      background: #25d366;
+      border: none;
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .btn-ligar {
+      background: var(--teal);
+      border: none;
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .btn-whats svg, .btn-ligar svg { width: 22px; height: 22px; fill: white; }
+    
+    .btn-primary {
+      background: var(--teal);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 12px;
+    }
+    .btn-secondary {
+      background: var(--coral);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100%;
+    }
+    
+    .avaliacao-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+    .avaliacao-card {
+      background: white;
+      border: 3px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .avaliacao-card.selected-indica { border-color: var(--teal); background: #f0fdfa; }
+    .avaliacao-card.selected-nao { border-color: var(--coral); background: #fff5f3; }
+    .avaliacao-emoji { font-size: 48px; margin-bottom: 8px; }
+    .avaliacao-label { font-weight: 800; font-size: 14px; }
+    
+    .chips-container { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    .chip {
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .chip.selected { background: var(--teal); color: white; border-color: var(--teal); }
+    
+    .input-field {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      font-size: 14px;
+      margin-bottom: 10px;
+      outline: none;
+    }
+    .input-field:focus { border-color: var(--teal); }
+    
+    .hidden { display: none !important; }
+    
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: white;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      z-index: 100;
+    }
+    .nav-item { display: flex; flex-direction: column; align-items: center; padding: 6px 16px; cursor: pointer; color: #718096; font-size: 11px; }
+    .nav-item.active { color: var(--teal); font-weight: 800; }
+    .nav-item .nav-icon { font-size: 24px; margin-bottom: 2px; }
+    
+    .admin-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+    .admin-tab { background: white; border: 2px solid #e2e8f0; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; }
+    .admin-tab.active { background: var(--teal); color: white; border-color: var(--teal); }
+  </style>
+</head>
+<body>
+
+<div id="screen-login" class="container" style="max-width: 400px; margin: 60px auto; text-align: center;">
+  <img src="/logo.png" alt="Vizinha" style="width: 100px; height: 100px; border-radius: 20px; margin-bottom: 20px;">
+  <h1 style="font-size: 42px; font-weight: 800; color: var(--teal); margin-bottom: 8px;">Vizinha</h1>
+  <p style="font-family: 'Caveat', cursive; font-size: 26px; color: var(--coral); margin-bottom: 8px;">tá aí as minhas indicações!</p>
+  <p style="color: #718096; margin-bottom: 30px;">Condomínio Villagio Bourbon</p>
+  
+  <div id="step-phone">
+    <label style="display: block; text-align: left; font-weight: 700; margin-bottom: 6px;">Seu celular com DDD</label>
+    <input type="tel" id="login-phone" class="input-field" placeholder="(44) 99999-9999" maxlength="15">
+    <button onclick="requestSMS()" class="btn-primary">Enviar Código por SMS</button>
+  </div>
+  
+  <div id="step-code" class="hidden">
+    <label style="display: block; text-align: left; font-weight: 700; margin-bottom: 6px;">Código de 6 dígitos</label>
+    <input type="text" id="login-code" class="input-field" style="text-align: center; font-size: 24px; letter-spacing: 8px;" maxlength="6" placeholder="000000">
+    <button onclick="verifySMS()" class="btn-primary">Confirmar</button>
+    <button onclick="backToPhone()" style="background: none; border: none; color: var(--teal); padding: 12px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 8px;">Voltar</button>
+  </div>
+</div>
+
+<div id="screen-app" class="hidden">
+  <header class="app-header">
+    <div class="header-container">
+      <div class="header-left">
+        <img src="/logo.png" alt="Vizinha" class="header-logo">
+        <div class="header-title-group">
+          <h1 class="header-title">Vizinha</h1>
+          <div class="header-frase">tá aí as minhas indicações! 💕</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btn-admin" onclick="showTab('admin')" class="btn-admin hidden">Administrador</button>
+        <button onclick="logout()" class="btn-logout">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="tab-home">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="busca-prestador" oninput="filtrarCategorias()" placeholder="Buscar pelo nome ou serviço">
+      </div>
+      <button onclick="abrirModalCadastro()" class="btn-cadastrar">+ Cadastrar prestador</button>
+      <div id="lista-categorias"></div>
+    </div>
+
+    <div id="tab-lista-prestadores" class="hidden">
+      <button onclick="voltarParaCategorias()" class="btn-voltar">← Serviços</button>
+      <h2 id="titulo-categoria-atual" style="font-size: 18px; font-weight: 800; color: var(--teal); margin: 12px 0;"></h2>
+      <div id="lista-prestadores-categoria"></div>
+    </div>
+
+    <div id="tab-detalhe-prestador" class="hidden">
+      <button onclick="voltarParaLista()" class="btn-voltar">← Voltar</button>
+      <div id="conteudo-detalhe"></div>
+    </div>
+
+    <div id="tab-avaliacoes" class="hidden">
+      <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px; color: var(--teal);">Minhas Avaliações</h2>
+      <div id="lista-minhas-avaliacoes"></div>
+    </div>
+
+    <div id="tab-perfil" class="hidden">
+      <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px; color: var(--teal);">Meu Perfil</h2>
+      <div id="perfil-info" class="card-detalhe"></div>
+    </div>
+
+    <div id="tab-admin" class="hidden">
+      <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px; color: var(--teal);">Painel do Administrador</h2>
+      <div class="admin-tabs">
+        <button onclick="showAdminTab('moradores')" class="admin-tab active" id="admin-tab-moradores">Moradores</button>
+        <button onclick="showAdminTab('categorias')" class="admin-tab" id="admin-tab-categorias">Categorias</button>
+        <button onclick="showAdminTab('mensagens')" class="admin-tab" id="admin-tab-mensagens">Mensagens</button>
+      </div>
+      <div id="admin-moradores"></div>
+      <div id="admin-categorias" class="hidden"></div>
+      <div id="admin-mensagens" class="hidden"></div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav" id="bottom-nav">
+    <div class="nav-item active" id="nav-home" onclick="showTab('home')">
+      <span class="nav-icon">🏠</span><span>Início</span>
+    </div>
+    <div class="nav-item" id="nav-avaliacoes" onclick="showTab('avaliacoes')">
+      <span class="nav-icon">⭐</span><span>Avaliações</span>
+    </div>
+    <div class="nav-item" id="nav-perfil" onclick="showTab('perfil')">
+      <span class="nav-icon">👤</span><span>Perfil</span>
+    </div>
+  </nav>
+</div>
+
+<!-- MODAL CADASTRO -->
+<div id="modal-cadastro" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: flex-end; justify-content: center;">
+  <div style="background: white; width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 24px; max-height: 90vh; overflow-y: auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <h3 style="font-size: 20px; font-weight: 800;">Novo Prestador</h3>
+      <button onclick="fecharModalCadastro()" style="background: none; border: none; font-size: 24px; cursor: pointer;">✕</button>
+    </div>
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Nome *</label>
+    <input type="text" id="cad-nome" class="input-field" placeholder="Nome do prestador">
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Telefone *</label>
+    <input type="tel" id="cad-telefone" class="input-field" placeholder="(44) 99999-9999">
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Tipo *</label>
+    <select id="cad-tipo" class="input-field">
+      <option value="Autônomo">Autônomo</option>
+      <option value="Empresa">Empresa</option>
+    </select>
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Categoria *</label>
+    <select id="cad-categoria" class="input-field"><option value="">Selecione...</option></select>
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Diferencial</label>
+    <textarea id="cad-diferencial" class="input-field" placeholder="Ex: 10 anos de experiência"></textarea>
+    <button onclick="salvarPrestador()" class="btn-primary">Salvar Prestador</button>
+  </div>
+</div>
+
+<script>
+let token = localStorage.getItem('vizinha_token');
+let categorias = [];
+let prestadores = [];
+let resumoAvaliacoes = {};
+let ehAdmin = false;
+let gruposAbertos = {};
+let categoriaAtualId = null;
+let categoriaAtualNome = null;
+let prestadorAtual = null;
+let tipoAvaliacao = null;
+
+const iconesCategorias = {
+  'Diarista': '🧹', 'Mensalista': '👷', 'Babá': '👶', 'Cuidador de idoso': '👴',
+  'Lavanderia': '👕', 'Manicure': '💅', 'Terapia': '🧠', 'Médicos': '🩺',
+  'Organização': '📦', 'Pintor': '🎨', 'Eletricista': '💡', 'Encanador': '🔧',
+  'Azulejista': '🟦', 'Marceneiro': '🪚', 'Jardineiro': '🌿', 'Ar-condicionado': '❄️',
+  'Eletrodomésticos': '🔌', 'Dedetizador': '🪳', 'Gesseiro': '🏗️', 'Pedreiro': '🧱',
+  'Coleta de exames': '🩸', 'Enfermeiro': '💉', 'Fisioterapeuta': '🦴',
+  'Cabeleireiro': '💇', 'Maquiador': '💄', 'Massagista': '💆',
+  'Geladeira': '🧊', 'Internet': '🌐', 'Máquina de lavar': '🫧', 'TV a cabo': '📺',
+  'Água': '🚰', 'Delivery de comida': '🛵', 'Gás': '🔥', 'Minimercado': '🛒',
+  'Caixa de gordura': '🍳', 'Cozinheira': '🥘', 'Deep cleaning': '✨',
+  'Limpeza de caixa d\'água': '💧', 'Limpeza de vidros': '🪟', 'Passadeira': '👕',
+  'Lava car': '🚗', 'Piscineiro': '🏊', 'Outra': '➕'
+};
+
+function getIcone(cat) { return iconesCategorias[cat] || '🔧'; }
+
+function getCorGrupo(grupo) {
+  const cores = {
+    'Casa e Limpeza': '#4FB8B8', 'Obras e Reformas': '#d97706',
+    'Assistência Técnica e Instalações': '#7c3aed', 'Saúde e Home Care': '#dc2626',
+    'Beleza e Bem-Estar': '#db2777', 'Família e Área Externa': '#475569',
+    'Alimentação e Entregas': '#059669', 'Outros': '#6b7280'
+  };
+  return cores[grupo] || '#6b7280';
+}
+
+function getClasseGrupo(grupo) {
+  const classes = {
+    'Casa e Limpeza': 'grupo-casa', 'Obras e Reformas': 'grupo-obras',
+    'Assistência Técnica e Instalações': 'grupo-tech', 'Saúde e Home Care': 'grupo-saude',
+    'Beleza e Bem-Estar': 'grupo-beleza', 'Família e Área Externa': 'grupo-familia',
+    'Alimentação e Entregas': 'grupo-alimentacao', 'Outros': 'grupo-outros'
+  };
+  return classes[grupo] || 'grupo-outros';
+}
+
+async function requestSMS() {
+  const phone = document.getElementById('login-phone').value;
+  const res = await fetch('/api/login/request', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({telefone: phone})
+  });
+  const data = await res.json();
+  if (res.ok) {
+    document.getElementById('step-phone').classList.add('hidden');
+    document.getElementById('step-code').classList.remove('hidden');
+  } else {
+    alert(data.error);
+  }
+}
+
+async function verifySMS() {
+  const phone = document.getElementById('login-phone').value;
+  const code = document.getElementById('login-code').value;
+  const res = await fetch('/api/login/verify', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({telefone: phone, codigo: code})
+  });
+  const data = await res.json();
+  if (res.ok) {
+    token = data.token;
+    ehAdmin = data.eh_admin;
+    localStorage.setItem('vizinha_token', token);
+    localStorage.setItem('vizinha_admin', ehAdmin ? '1' : '0');
+    document.getElementById('screen-login').classList.add('hidden');
+    document.getElementById('screen-app').classList.remove('hidden');
+    if (ehAdmin) document.getElementById('btn-admin').classList.remove('hidden');
+    await initApp();
+  } else {
+    alert(data.error);
+  }
+}
+
+function backToPhone() {
+  document.getElementById('step-code').classList.add('hidden');
+  document.getElementById('step-phone').classList.remove('hidden');
+}
+
+function logout() {
+  localStorage.removeItem('vizinha_token');
+  localStorage.removeItem('vizinha_admin');
+  location.reload();
+}
+
+async function initApp() {
+  await carregarCategorias();
+  await carregarPrestadores();
+  await carregarResumoAvaliacoes();
+  renderizarCategorias();
+}
+
+async function carregarCategorias() {
+  const res = await fetch('/api/categorias', {
+    headers: {'Authorization': `Bearer ${token}`}
+  });
+  categorias = await res.json();
+  const select = document.getElementById('cad-categoria');
+  select.innerHTML = '<option value="">Selecione...</option>';
+  categorias.forEach(c => {
+    select.innerHTML += `<option value="${c.id}">${c.nome} (${c.grupo})</option>`;
+  });
+}
+
+async function carregarPrestadores() {
+  const res = await fetch('/api/prestadores', {
+    headers: {'Authorization': `Bearer ${token}`}
+  });
+  prestadores = await res.json();
+}
+
+async function carregarResumoAvaliacoes() {
+  try {
+    const res = await fetch('/api/prestadores/avaliacoes-resumo', {
+      headers: {'Authorization': `Bearer ${token}`}
+    });
+    const data = await res.json();
+    resumoAvaliacoes = {};
+    data.forEach(r => {
+      resumoAvaliacoes[r.prestador_id] = {
+        indica: parseInt(r.indica) || 0,
+        nao_indica: parseInt(r.nao_indica) || 0
+      };
+    });
+  } catch(e) {
+    resumoAvaliacoes = {};
+  }
+}
+
+function toggleGrupo(grupo) {
+  gruposAbertos[grupo] = !gruposAbertos[grupo];
+  renderizarCategorias();
+}
+
+function renderizarCategorias() {
+  const busca = document.getElementById('busca-prestador').value.toLowerCase().trim();
+  const container = document.getElementById('lista-categorias');
+  container.innerHTML = '';
+
+  const grupos = {};
+  categorias.forEach(c => {
+    if (!grupos[c.grupo]) grupos[c.grupo] = [];
+    grupos[c.grupo].push(c);
+  });
+
+  const ordemGrupos = ['Obras e Reformas','Saúde e Home Care','Beleza e Bem-Estar','Assistência Técnica e Instalações','Alimentação e Entregas','Casa e Limpeza','Família e Área Externa','Outros'];
+  
+  ordemGrupos.forEach(grupo => {
+    if (!grupos[grupo]) return;
+    
+    const cats = grupos[grupo].filter(c => {
+      if (!busca) return true;
+      const matchCategoria = c.nome.toLowerCase().includes(busca);
+      const prestadoresMatch = prestadores.filter(p => 
+        p.categoria_principal_id === c.id && 
+        p.nome.toLowerCase().includes(busca)
+      );
+      return matchCategoria || prestadoresMatch.length > 0;
+    });
+    
+    if (cats.length === 0) return;
+
+    const estaAberto = gruposAbertos[grupo] === true || busca.length > 0;
+    
+    const grupoDiv = document.createElement('div');
+    grupoDiv.innerHTML = `
+      <div class="grupo-header ${getClasseGrupo(grupo)} ${!estaAberto ? 'collapsed' : ''}" onclick="toggleGrupo('${grupo}')">
+        <span>${grupo}</span>
+        <span class="seta">▼</span>
+      </div>
+      <div class="grupo-content ${!estaAberto ? 'collapsed' : ''}">
+        ${cats.map(c => {
+          const count = prestadores.filter(p => p.categoria_principal_id === c.id).length;
+          return `
+            <div class="card-categoria" style="border-left-color:${getCorGrupo(grupo)};" onclick="abrirCategoria(${c.id}, '${c.nome.replace(/'/g,"\\'")}')">
+              <div class="icone" style="background:${getCorGrupo(grupo)}20; color:${getCorGrupo(grupo)};">${getIcone(c.nome)}</div>
+              <div class="info">
+                <div class="nome">${c.nome}</div>
+                <div class="contador">${count} prestador(es)</div>
+              </div>
+              <span style="color: #cbd5e0; font-size: 20px;">›</span>
+            </div>`;
+        }).join('')}
+      </div>
+    `;
+    container.appendChild(grupoDiv);
+  });
+}
+
+function filtrarCategorias() {
+  renderizarCategorias();
+}
+
+function abrirCategoria(catId, catNome) {
+  categoriaAtualId = catId;
+  categoriaAtualNome = catNome;
+  document.getElementById('titulo-categoria-atual').textContent = catNome;
+  
+  const lista = document.getElementById('lista-prestadores-categoria');
+  const catsPrest = prestadores.filter(p => p.categoria_principal_id === catId);
+  
+  if (catsPrest.length === 0) {
+    lista.innerHTML = '<div class="card-detalhe" style="text-align: center; color: #718096; padding: 30px;">Nenhum prestador nesta categoria ainda.</div>';
+  } else {
+    lista.innerHTML = catsPrest.map(p => {
+      const resumo = resumoAvaliacoes[p.id] || {indica:0, nao_indica:0};
+      const total = resumo.indica + resumo.nao_indica;
+      const statusAval = total === 0 ? 'sem avaliação' : `${resumo.indica} indica / ${resumo.nao_indica} não`;
+      return `
+        <div class="card-prestador" onclick="abrirDetalhe(${p.id})">
+          <div class="info">
+            <div class="nome">${p.nome}</div>
+            <div class="sub">${p.tipo} · ${p.categoria_nome}</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 12px; color: #718096;">${statusAval}</div>
+            <div style="font-size: 12px; color: #718096;">${total} aval.</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+  
+  showTab('lista-prestadores');
+}
+
+function voltarParaCategorias() {
+  showTab('home');
+}
+
+function abrirDetalhe(prestId) {
+  const p = prestadores.find(x => x.id === prestId);
+  if (!p) return;
+  prestadorAtual = p;
+  
+  const resumo = resumoAvaliacoes[p.id] || {indica:0, nao_indica:0};
+  const total = resumo.indica + resumo.nao_indica;
+  
+  document.getElementById('conteudo-detalhe').innerHTML = `
+    <div class="card-detalhe">
+      <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">${p.nome}</h2>
+      <p style="color: #718096; font-size: 14px;">${p.tipo} · ${p.categoria_nome}</p>
+      ${p.diferencial ? `<p style="font-style: italic; color: #718096; margin-top: 10px;">${p.diferencial}</p>` : ''}
+      
+      <div style="display: flex; align-items: center; gap: 10px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+       <span style="font-size: 15px; font-weight: 700; flex: 1;">${p.telefone.startsWith('+55') ? p.telefone : '+55 ' + p.telefone}</span>
+        <a href="https://wa.me/${p.telefone.replace(/\D/g,'')}" target="_blank" class="btn-whats">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        </a>
+        <a href="tel:${p.telefone.replace(/\D/g,'')}" class="btn-ligar">
+          <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        </a>
+      </div>
+    </div>
+    
+    <div class="card-detalhe">
+      <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Avaliações (${total})</h3>
+      <p style="color: #718096; margin-bottom: 16px;">${resumo.indica} indicam · ${resumo.nao_indica} não indicam</p>
+      
+      <div class="avaliacao-cards">
+        <div class="avaliacao-card" id="btn-indica" onclick="selecionarAvaliacao('indica')">
+          <div class="avaliacao-emoji">😊</div>
+          <div class="avaliacao-label">INDICA</div>
+        </div>
+        <div class="avaliacao-card" id="btn-nao-indica" onclick="selecionarAvaliacao('nao_indica')">
+          <div class="avaliacao-emoji">😠</div>
+          <div class="avaliacao-label">NÃO INDICA</div>
+        </div>
+      </div>
+      
+            <div id="secao-motivos" class="hidden">
+        <label style="display: block; font-weight: 700; margin-bottom: 6px; color: var(--teal-dark);">Por que você indica? (opcional)</label>
+        <div class="chips-container">
+          <button onclick="toggleChip(this)" class="chip">⏱️ Pontual</button>
+          <button onclick="toggleChip(this)" class="chip">💰 Preço justo</button>
+          <button onclick="toggleChip(this)" class="chip">🤝 Bom atendimento</button>
+          <button onclick="toggleChip(this)" class="chip">👔 Profissional</button>
+          <button onclick="toggleChip(this)" class="chip">🧹 Limpo e organizado</button>
+          <button onclick="toggleChip(this)" class="chip">⭐ Trabalho de qualidade</button>
+          <button onclick="toggleChip(this)" class="chip">🛡️ Honesto e confiável</button>
+          <button onclick="toggleChip(this)" class="chip">🔧 Resolveu o problema</button>
+          <button onclick="toggleChip(this)" class="chip">💯 Recomendo muito</button>
+        </div>
+      </div>
+      
+      <div id="secao-comentario" class="hidden">
+        <label style="display: block; font-weight: 700; margin-bottom: 6px;">Comentário (opcional)</label>
+        <textarea id="comentario" class="input-field" placeholder="Conte sua experiência..."></textarea>
+      </div>
+      
+      <button onclick="enviarAvaliacao()" class="btn-primary">Enviar Avaliação</button>
+    </div>
+  `;
+  
+  showTab('detalhe-prestador');
+}
+
+function selecionarAvaliacao(tipo) {
+  tipoAvaliacao = tipo;
+  document.getElementById('btn-indica').classList.toggle('selected-indica', tipo === 'indica');
+  document.getElementById('btn-nao-indica').classList.toggle('selected-nao', tipo === 'nao_indica');
+  document.getElementById('secao-motivos').classList.toggle('hidden', tipo !== 'indica');
+  document.getElementById('secao-comentario').classList.toggle('hidden', tipo !== 'indica');
+}
+
+function toggleChip(el) {
+  el.classList.toggle('selected');
+}
+
+async function enviarAvaliacao() {
+  if (!tipoAvaliacao) {
+    alert('Selecione INDICA ou NÃO INDICA');
+    return;
+  }
+  
+  const motivos = [];
+  document.querySelectorAll('#secao-motivos .chip.selected').forEach(c => motivos.push(c.textContent));
+  const comentario = document.getElementById('comentario')?.value || '';
+  
+  const res = await fetch('/api/avaliacoes', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      prestador_id: prestadorAtual.id,
+      tipo: tipoAvaliacao,
+      motivos: motivos,
+      comentario: comentario
+    })
+  });
+  
+  if (res.ok) {
+    alert('Avaliação enviada com sucesso!');
+    await carregarResumoAvaliacoes();
+    abrirDetalhe(prestadorAtual.id);
+  } else {
+    const data = await res.json();
+    alert('Erro: ' + data.error);
+  }
+}
+
+function voltarParaLista() {
+  if (categoriaAtualId) {
+    abrirCategoria(categoriaAtualId, categoriaAtualNome);
+  } else {
+    showTab('home');
+  }
+}
+
+function showTab(tab) {
+  ['home','lista-prestadores','detalhe-prestador','avaliacoes','perfil','admin'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if (el) el.classList.add('hidden');
+  });
+  document.getElementById('tab-'+tab).classList.remove('hidden');
+  
+  ['home','avaliacoes','perfil'].forEach(t => {
+    const nav = document.getElementById('nav-'+t);
+    if (nav) nav.classList.remove('active');
+  });
+  const activeNav = document.getElementById('nav-'+tab);
+  if (activeNav) activeNav.classList.add('active');
+  
+  document.getElementById('bottom-nav').classList.toggle('hidden', tab === 'admin' || tab === 'lista-prestadores' || tab === 'detalhe-prestador');
+  
+  if (tab === 'avaliacoes') carregarMinhasAvaliacoes();
+  if (tab === 'perfil') carregarPerfil();
+  if (tab === 'admin') {
+    carregarMoradores();
+    carregarCategoriasAdmin();
+    carregarMensagens();
+  }
+}
+
+function showAdminTab(tab) {
+  ['moradores','categorias','mensagens'].forEach(t => {
+    document.getElementById('admin-'+t).classList.add('hidden');
+    document.getElementById('admin-tab-'+t).classList.remove('active');
+  });
+  document.getElementById('admin-'+tab).classList.remove('hidden');
+  document.getElementById('admin-tab-'+tab).classList.add('active');
+}
+
+async function carregarMoradores() {
+  const res = await fetch('/api/admin/moradores', {
+    headers: {'Authorization': `Bearer ${token}`}
+  });
+  const moradores = await res.json();
+  document.getElementById('admin-moradores').innerHTML = moradores.map(m => `
+    <div class="card-detalhe">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <div>
+          <div style="font-weight: 700;">${m.nome}</div>
+          <div style="font-size: 13px; color: #718096;">Unidade: ${m.unidade} | Tel: ${m.telefone}</div>
+        </div>
+        <span style="background: ${m.status === 'ativo' ? '#10b981' : '#f59e0b'}20; color: ${m.status === 'ativo' ? '#10b981' : '#f59e0b'}; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700;">${m.status.toUpperCase()}</span>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button onclick="mudarStatusMorador(${m.id},'ativo')" style="flex: 1; background: #10b981; color: white; border: none; padding: 10px; border-radius: 16px; font-weight: 700; cursor: pointer;">Aprovar</button>
+        <button onclick="mudarStatusMorador(${m.id},'inativo')" style="flex: 1; background: var(--coral); color: white; border: none; padding: 10px; border-radius: 16px; font-weight: 700; cursor: pointer;">Inativar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function mudarStatusMorador(id, status) {
+  const res = await fetch(`/api/admin/moradores/${id}/status`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({status})
+  });
+  if (res.ok) {
+    alert('Status atualizado!');
+    carregarMoradores();
+  }
+}
+
+async function carregarCategoriasAdmin() {
+  const res = await fetch('/api/admin/categorias', {
+    headers: {'Authorization': `Bearer ${token}`}
+  });
+  const cats = await res.json();
+  document.getElementById('admin-categorias').innerHTML = cats.map(c => `
+    <div class="card-detalhe" style="display: flex; align-items: center; gap: 12px;">
+      <div style="width: 16px; height: 16px; border-radius: 50%; background: ${c.cor};"></div>
+      <div style="flex: 1;">
+        <div style="font-weight: 700;">${c.nome}</div>
+        <div style="font-size: 12px; color: #718096;">${c.grupo}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function carregarMensagens() {
+  const res = await fetch('/api/admin/mensagens', {
+    headers: {'Authorization': `Bearer ${token}`}
+  });
+  const msgs = await res.json();
+  document.getElementById('admin-mensagens').innerHTML = msgs.length === 0 ? '<p style="text-align: center; color: #718096; padding: 20px;">Nenhuma mensagem.</p>' : msgs.map(m => `
+    <div class="card-detalhe">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+        <span style="background: #f0fdfa; padding: 3px 10px; border-radius: 12px; font-size: 11px; color: var(--teal-dark); font-weight: 700;">${m.tipo}</span>
+        <span style="font-size: 11px; color: #718096;">${new Date(m.created_at).toLocaleDateString('pt-BR')}</span>
+      </div>
+      <p style="font-size: 14px; margin-bottom: 8px;">${m.mensagem}</p>
+      <p style="font-size: 12px; color: #718096;">De: ${m.morador_nome} (Unidade ${m.unidade})</p>
+    </div>
+  `).join('');
+}
+
+async function carregarMinhasAvaliacoes() {
+  const res = await fetch('/api/morador/avaliacoes', {
+    headers: {'Authorization': `Bearer ${token}`}
+  });
+  const avs = await res.json();
+  document.getElementById('lista-minhas-avaliacoes').innerHTML = avs.length === 0 ? '<div class="card-detalhe" style="text-align: center; color: #718096; padding: 30px;">Você ainda não avaliou nenhum prestador.</div>' : avs.map(a => `
+    <div class="card-detalhe">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <div style="font-weight: 700;">${a.prestador_nome}</div>
+        <span style="background: ${a.tipo === 'indica' ? '#f0fdfa' : '#fff5f3'}; color: ${a.tipo === 'indica' ? 'var(--teal-dark)' : 'var(--coral-dark)'}; padding: 4px 12px; border-radius: 14px; font-size: 12px; font-weight: 700;">${a.tipo === 'indica' ? '😊 INDICA' : '😠 NÃO INDICA'}</span>
+      </div>
+      ${a.comentario ? `<p style="font-size: 13px; color: #718096; font-style: italic;">"${a.comentario}"</p>` : ''}
+    </div>
+  `).join('');
+}
+
+async function carregarPerfil() {
+  const res = await fetch('/api/morador/perfil', {
+    headers: {'Authorization': `Bearer ${token}`}
+  });
+  const p = await res.json();
+  document.getElementById('perfil-info').innerHTML = `
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="display: flex; justify-content: space-between;"><span style="color: #718096;">Nome:</span><span style="font-weight: 700;">${p.nome}</span></div>
+      <div style="display: flex; justify-content: space-between;"><span style="color: #718096;">Unidade:</span><span style="font-weight: 700;">${p.unidade}</span></div>
+      <div style="display: flex; justify-content: space-between;"><span style="color: #718096;">Telefone:</span><span style="font-weight: 700;">${p.telefone}</span></div>
+      <div style="display: flex; justify-content: space-between;"><span style="color: #718096;">Tipo:</span><span style="font-weight: 700;">${p.eh_admin ? 'Administrador' : 'Morador'}</span></div>
+    </div>
+  `;
+}
+
+function abrirModalCadastro() {
+  document.getElementById('modal-cadastro').classList.remove('hidden');
+}
+
+function fecharModalCadastro() {
+  document.getElementById('modal-cadastro').classList.add('hidden');
+}
+
+async function salvarPrestador() {
+  const nome = document.getElementById('cad-nome').value.trim();
+  const telefone = document.getElementById('cad-telefone').value.trim();
+  const tipo = document.getElementById('cad-tipo').value;
+  const categoria_id = document.getElementById('cad-categoria').value;
+  const diferencial = document.getElementById('cad-diferencial').value.trim();
+  
+  if (!nome || !telefone || !categoria_id) {
+    alert('Preencha nome, telefone e categoria');
+    return;
+  }
+  
+  const res = await fetch('/api/prestadores', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ nome, telefone, tipo, categoria_id, diferencial })
+  });
+  
+  if (res.ok) {
+    alert('Prestador cadastrado!');
+    fecharModalCadastro();
+    await carregarPrestadores();
+    renderizarCategorias();
+  } else {
+    const data = await res.json();
+    alert('Erro: ' + data.error);
+  }
+}
+</script>
+
+</body>
+</html>

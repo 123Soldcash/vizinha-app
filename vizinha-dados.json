@@ -1,0 +1,1442 @@
+{
+  "exportadoEm": "2026-10-29T05:36:27.149Z",
+  "providers": [
+    {
+      "bl": false,
+      "cadastradoPor": "44988880000",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "Trabalha com a gente a mais de 10 anos, super de confiança, tem carro",
+      "id": 1,
+      "nome": "Ana Paula",
+      "precos": [
+        {
+          "data": "planilha",
+          "tipo": "Diária",
+          "valor": 180
+        }
+      ],
+      "reviews": [],
+      "tel": "44 9926 5801",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "",
+      "id": 100,
+      "indicado": "Compartilhado no chat em 11/24/25 (remetente sem nome salvo)",
+      "nome": "Thathy Filha Carmem",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99752-6725",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "",
+      "id": 101,
+      "indicado": "Compartilhado no chat em 12/2/25 (remetente sem nome salvo)",
+      "nome": "Rose & Carlos POLIZER",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99184-9812",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 102,
+      "indicado": "Compartilhado no chat em 12/7/25 (remetente sem nome salvo)",
+      "nome": "Cleonice - Diarista",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9967-9346",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Mensalista"
+      ],
+      "dif": "",
+      "id": 103,
+      "indicado": "Compartilhado no chat em 12/8/25 (remetente sem nome salvo)",
+      "nome": "Gabriela Mensalista",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 98456-8161",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "",
+      "id": 104,
+      "indicado": "Compartilhado no chat em 12/13/25 (remetente sem nome salvo)",
+      "nome": "Dirceia",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9928-3187",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "",
+      "id": 105,
+      "indicado": "Compartilhado no chat em 12/15/25 (remetente sem nome salvo)",
+      "nome": "Marcilene Novo",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99900-0924",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "",
+      "id": 106,
+      "indicado": "Compartilhado no chat em 12/16/25 (remetente sem nome salvo)",
+      "nome": "Kênia",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 67 99146-1926",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 107,
+      "indicado": "Compartilhado no chat por Mae Davi em 1/10/26",
+      "nome": "Rosalina Novo Diarista",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99870-1116",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 108,
+      "indicado": "Compartilhado no chat em 1/13/26 (remetente sem nome salvo)",
+      "nome": "Ivani Diarista Dri",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99927-5870",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "",
+      "id": 109,
+      "indicado": "Compartilhado no chat em 1/14/26 (remetente sem nome salvo)",
+      "nome": "Eliane do Amara",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99912-2824",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 110,
+      "indicado": "Compartilhado no chat em 1/15/26 (remetente sem nome salvo)",
+      "nome": "Silvia Diarista Joyce",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9816-5661",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 111,
+      "indicado": "Compartilhado no chat em 1/15/26 (remetente sem nome salvo)",
+      "nome": "Maria - Diarista",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99153-8188",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Cuidador de idoso"
+      ],
+      "dif": "",
+      "id": 112,
+      "indicado": "Compartilhado no chat em 1/30/26 (remetente sem nome salvo)",
+      "nome": "Val / Cuidadora",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 98847-0526",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 113,
+      "indicado": "Compartilhado no chat em 2/3/26 (remetente sem nome salvo)",
+      "nome": "Claudia - Diarista",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99923-1094",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 114,
+      "indicado": "Indicação: Michelle",
+      "nome": "Eliane Diarista Indic. Por Michelle",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99921-4406",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 115,
+      "indicado": "Compartilhado no chat em 2/7/26 (remetente sem nome salvo)",
+      "nome": "Jo Diarista",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99881-1670",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "",
+      "id": 116,
+      "indicado": "Compartilhado no chat em 2/12/26 (remetente sem nome salvo)",
+      "nome": "Fernanda",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9997-1524",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Babá"
+      ],
+      "dif": "",
+      "id": 117,
+      "indicado": "Compartilhado no chat em 2/12/26 (remetente sem nome salvo)",
+      "nome": "Raissa Irmã Sabrina Baba",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9747-7663",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 118,
+      "indicado": "Compartilhado no chat por Sheila Zuniga Bourbob em 2/12/26",
+      "nome": "Bia da Lu Diarista Irma",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99847-6217",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Babá"
+      ],
+      "dif": "",
+      "id": 119,
+      "indicado": "Compartilhado no chat em 2/14/26 (remetente sem nome salvo)",
+      "nome": "Juliana Ribeiro Babá",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 8837-2929",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "",
+      "id": 120,
+      "indicado": "Compartilhado no chat em 2/25/26 (remetente sem nome salvo)",
+      "nome": "Luciana Irma Sirlei",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 8426-7617",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Mensalista"
+      ],
+      "dif": "",
+      "id": 121,
+      "indicado": "Compartilhado no chat em 3/6/26 (remetente sem nome salvo)",
+      "nome": "Edicleia Mensalista",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99959-3125",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Babá"
+      ],
+      "dif": "",
+      "id": 122,
+      "indicado": "Compartilhado no chat por Esposa Do Bruno Tatiane em 3/26/26",
+      "nome": "Babá Tamires",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9960-9018",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Babá"
+      ],
+      "dif": "",
+      "id": 123,
+      "indicado": "Compartilhado no chat por Esposa Do Bruno Tatiane em 3/26/26",
+      "nome": "Camili Prof Marista Baba",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 98837-0889",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Mensalista"
+      ],
+      "dif": "",
+      "id": 124,
+      "indicado": "Compartilhado no chat em 3/30/26 (remetente sem nome salvo)",
+      "nome": "Michele Mensalista",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 8436-6786",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Mensalista"
+      ],
+      "dif": "",
+      "id": 125,
+      "indicado": "Compartilhado no chat por Esposa Do Bruno Tatiane em 4/7/26",
+      "nome": "Marilza Mensalista maira Rocha",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99873-2043",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 126,
+      "indicado": "Compartilhado no chat em 4/28/26 (remetente sem nome salvo)",
+      "nome": "Rose Diarista 2",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99948-3207",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 127,
+      "indicado": "Compartilhado no chat por Esposa Do Bruno Tatiane em 4/30/26",
+      "nome": "Wanessa Célula Diarista",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99877-6375",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "",
+      "id": 128,
+      "indicado": "Compartilhado no chat em 5/3/26 (remetente sem nome salvo)",
+      "nome": "Marcia",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 98459-8124",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 129,
+      "indicado": "Compartilhado no chat em 5/11/26 (remetente sem nome salvo)",
+      "nome": "Eliane Diarista",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9921-4406",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 130,
+      "indicado": "Compartilhado no chat em 5/12/26 (remetente sem nome salvo)",
+      "nome": "Ana e Cida- Diaristas",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9136-9081",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "",
+      "id": 131,
+      "indicado": "Compartilhado no chat em 5/18/26 (remetente sem nome salvo)",
+      "nome": "Ana Fenti",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9938-8682",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "",
+      "id": 132,
+      "indicado": "Compartilhado no chat por You em 6/21/26",
+      "nome": "Natalia Mary",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99919-4032",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Lavanderia"
+      ],
+      "dif": "",
+      "id": 133,
+      "indicado": "Compartilhado no chat em 8/6/26 (remetente sem nome salvo)",
+      "nome": "Lavanderia Maringá",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99155-2952",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 134,
+      "indicado": "Indicação: Nilda",
+      "nome": "Vanessa Diarista Indicacao Nilda",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 16 99275-8532",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Terapia"
+      ],
+      "dif": "",
+      "id": 135,
+      "indicado": "Compartilhado no chat em 9/22/26 (remetente sem nome salvo)",
+      "nome": "Márcia Marquiori",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99717-8747",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "",
+      "id": 136,
+      "indicado": "Compartilhado no chat em 9/22/26 (remetente sem nome salvo)",
+      "nome": "Ivonete",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99701-9125",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 137,
+      "indicado": "Compartilhado no chat em 9/22/26 (remetente sem nome salvo)",
+      "nome": "Adriana - Faxina Pereira",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99822-7540",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Ar-condicionado"
+      ],
+      "dif": "",
+      "id": 138,
+      "indicado": "Compartilhado no chat em 9/28/26 (remetente sem nome salvo)",
+      "nome": "Clovis alemao",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 98812-9772",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Ar-condicionado"
+      ],
+      "dif": "",
+      "id": 139,
+      "indicado": "Compartilhado no chat em 9/28/26 (remetente sem nome salvo)",
+      "nome": "Injet Ar Condicionado Retira",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99128-0621",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "importado do chat",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 141,
+      "indicado": "Compartilhado no chat em 7/15/26 (remetente sem nome salvo)",
+      "nome": "Tina Inquilina",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9877-7519",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "cadastrado do grupo Confra Villagio Bourbon",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "",
+      "id": 142,
+      "indicado": "Indicado no grupo em 07/07/2022",
+      "nome": "Cortinas, colchas e almofadas",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99974-0768",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "cadastrado do grupo Confra Villagio Bourbon",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "",
+      "id": 143,
+      "indicado": "Indicado no grupo em 05/01/2023",
+      "nome": "Taís Goulart (copos personalizados)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9885-0956",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "cadastrado do grupo Confra Villagio Bourbon",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Fez serviço em casa, indicado como bom",
+      "id": 144,
+      "indicado": "Indicado no grupo em 08/11/2021",
+      "nome": "Fábio (indicado pela Nilda)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99916-9282",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "cadastrado do grupo Confra Villagio Bourbon",
+      "cats": [
+        "Manicure"
+      ],
+      "dif": "Atende em domicílio",
+      "id": 145,
+      "indicado": "Indicada no grupo em 30/08/2025",
+      "nome": "Manicure (mão e pé, atende em casa)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 11 98595-9096",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "cadastrado do grupo Confra Villagio Bourbon",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "Pacotes de diárias pré-agendadas",
+      "id": 146,
+      "indicado": "Divulgada no grupo em 2022",
+      "nome": "Agência de diaristas (pacotes semanais)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99861-9771",
+      "tipo": "Empresa"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "cadastrado do grupo Moradores Villaggio",
+      "cats": [
+        "Eletrodomésticos"
+      ],
+      "dif": "Conserta quase todo eletrônico; loja antiga na cidade",
+      "id": 147,
+      "indicado": "Indicado no grupo Moradores Villaggio em 18/05/2021",
+      "nome": "Osato (conserto de eletrônicos)",
+      "precos": [],
+      "reviews": [],
+      "tel": "(44) 3226-4620",
+      "tipo": "Empresa"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "cadastrado do grupo Moradores Villaggio",
+      "cats": [
+        "Dedetizador"
+      ],
+      "dif": "Atende escorpião e outras pragas; encomenda pelo WhatsApp",
+      "id": 148,
+      "indicado": "Indicado no grupo Moradores Villaggio em 28/04/2021",
+      "nome": "DDTudo",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99143-2760",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "cadastrado do grupo Negócios Villagio Bourbon",
+      "cats": [
+        "Marceneiro"
+      ],
+      "dif": "Reforma de cadeiras",
+      "id": 149,
+      "indicado": "Compartilhado por Fabio no grupo Negócios Villagio Bourbon",
+      "nome": "Reforma Cadeiras Claudio (Av. Paranavaí)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9936-5529",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Carro",
+      "id": 150,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Gabriel Gambine",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9109-0820",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Tapeceiro",
+      "id": 151,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Jose D Pacheco",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9962-6080",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Tapeceiro",
+      "id": 152,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Nidelson Sofá",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9992-9653",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Pintor"
+      ],
+      "dif": "",
+      "id": 153,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Luciano Cruz Pintor",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9960-2401",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Azulejista"
+      ],
+      "dif": "",
+      "id": 154,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Claudinei Vieira",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9910-9815",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Inox",
+      "id": 155,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Adolfo",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9122-3233",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Azulejista"
+      ],
+      "dif": "",
+      "id": 156,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Welton Azulejista",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 8835-4872",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Encanador"
+      ],
+      "dif": "Outros telefones: 44 3253-5172",
+      "id": 157,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Adriano Encanador (Tigre)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 8800-7004",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Professor de tênis",
+      "id": 158,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Feijão",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9133-4347",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Professor de tênis",
+      "id": 159,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Professor Cleverson (tênis)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 8819-3823",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Jardineiro"
+      ],
+      "dif": "",
+      "id": 160,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "David Jardineiro",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9898-7811",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Docinhos",
+      "id": 161,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Doce Amor Brigadeiros",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9911-5152",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Docinhos",
+      "id": 162,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Célia Regina de Souza (docinhos)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9922-3067",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Docinhos",
+      "id": 163,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Simone Santos (docinhos)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9956-8799",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 164,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Ingrid Novo",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9835-1311",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 165,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Neizi Diarista",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 8416-5447",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Vidro temperado",
+      "id": 166,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Fernando (Via Vidro)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9986-7764",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Pintor"
+      ],
+      "dif": "",
+      "id": 167,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Nilson Pintor (Camila)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9848-5835",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Vidro temperado",
+      "id": 168,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Susana (cunhada)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9862-4789",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Vidro temperado",
+      "id": 169,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Fabio (K3 Vidros)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9933-3666",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Marceneiro"
+      ],
+      "dif": "Carpinteiro/Telhado",
+      "id": 170,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Nei (carpinteiro)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9953-1004",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Ar-condicionado"
+      ],
+      "dif": "",
+      "id": 171,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Paulo Ar Condicionado",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9967-4939",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Ar-condicionado"
+      ],
+      "dif": "Outros telefones: 44 99704-9700",
+      "id": 172,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Arnaldo Ar Condicionado",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9893-1385",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Diarista"
+      ],
+      "dif": "",
+      "id": 173,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Rose Diarista Villagio",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9934-7904",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Pintor"
+      ],
+      "dif": "",
+      "id": 174,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Laércio (pintor)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9761-5789",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Médicos"
+      ],
+      "dif": "Dermatologista; Outros telefones: 44 3346-0112, 44 3053-1212",
+      "id": 175,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Clínica Dra. Ritha Capelato (dermatologia)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9980-4100",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "PVC janela/portas; Outros telefones: 44 9922-1909, 44 3226-0130",
+      "id": 176,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Celeste e Celi (manutenção pressurizador)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9894-9668",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "PVC janela/portas",
+      "id": 177,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Franciele Herrero (manutenção)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9179-3859",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Organização",
+        "Diarista"
+      ],
+      "dif": "Personal organizer / diarista",
+      "id": 178,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Cláudia Lima",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9872-0776",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Mudança; Outros telefones: 44 8431-5545",
+      "id": 179,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Aline Mudanças",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9972-5428",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Médicos"
+      ],
+      "dif": "Dentista",
+      "id": 180,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Dra. Ana Furlan (dentista)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 99158-9456",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Corretor de imóveis",
+      "id": 181,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Carlos (Opção Imóveis)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9969-9103",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Instalação de portas",
+      "id": 182,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Almir (instalação de portas)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9817-1993",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Eletricista"
+      ],
+      "dif": "",
+      "id": 183,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Edy Eletricista",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 41 9779-9088",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Bicicletas, peças e acessórios",
+      "id": 184,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Tech Bike",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9101-0588",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Grill / churrasqueira",
+      "id": 185,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Império Grill Churrasqueiras",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9926-0661",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Tela de proteção",
+      "id": 186,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Carlos Tela (Monique)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9964-1757",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Lavanderia"
+      ],
+      "dif": "",
+      "id": 187,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "5àSEC Cidade Monções (dry clean)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9762-1717",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Lavanderia"
+      ],
+      "dif": "",
+      "id": 188,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Lavanderia Dry Clean Maringá",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9169-8361",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Gráfica",
+      "id": 189,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Renata Estevo (BNI cartão)",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9909-0276",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Ar-condicionado"
+      ],
+      "dif": "",
+      "id": 190,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Anderson Vieira Ar Condicionado",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9755-4311",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Ar-condicionado"
+      ],
+      "dif": "",
+      "id": 191,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Lucas Gil Ar Condicionado",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9999-3250",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Ar-condicionado"
+      ],
+      "dif": "",
+      "id": 192,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Mauro Ar Condicionado",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9111-2013",
+      "tipo": "Autônomo"
+    },
+    {
+      "bl": false,
+      "cadastradoPor": "lista enviada pelo síndico/morador (planilha de prestadores)",
+      "cats": [
+        "Outra"
+      ],
+      "dif": "Cortina",
+      "id": 193,
+      "indicado": "Lista de prestadores (planilha)",
+      "nome": "Margarete Cortinas",
+      "precos": [],
+      "reviews": [],
+      "tel": "+55 44 9890-0128",
+      "tipo": "Autônomo"
+    }
+  ],
+  "residents": [
+    {
+      "admin": true,
+      "id": 1,
+      "nome": "Síndico (demo)",
+      "status": "ativo",
+      "tel": "44999990000",
+      "unidade": "Administração"
+    },
+    {
+      "admin": false,
+      "id": 2,
+      "nome": "Morador (demo)",
+      "status": "ativo",
+      "tel": "44988880000",
+      "unidade": "H7"
+    }
+  ],
+  "pending": [],
+  "feedback": [],
+  "customCats": []
+}
