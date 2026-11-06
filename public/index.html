@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vizinha - Villagio Bourbon</title>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <!-- Biblioteca para o Gráfico -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', sans-serif; }
@@ -211,13 +210,20 @@
   </nav>
 </div>
 
-<!-- MODAL CADASTRO -->
+<!-- MODAL CADASTRO COM WHATSAPP -->
 <div id="modal-cadastro" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: flex-end; justify-content: center;">
   <div style="background: white; width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 24px; max-height: 90vh; overflow-y: auto;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
       <h3 style="font-size: 20px; font-weight: 800;">Novo Prestador</h3>
       <button onclick="fecharModalCadastro()" style="background: none; border: none; font-size: 24px; cursor: pointer;">✕</button>
     </div>
+    
+    <div style="background: #f0fdfa; padding: 16px; border-radius: 16px; margin-bottom: 16px; border: 2px dashed var(--teal);">
+      <label style="display: block; font-weight: 700; margin-bottom: 6px; color: var(--teal-dark);">📋 Cole a mensagem do WhatsApp aqui:</label>
+      <textarea id="whatsapp-paste" class="input-field" style="background: white; min-height: 60px;" placeholder="Ex: O João eletricista é ótimo, tel: (44) 99999-1234"></textarea>
+      <button onclick="extrairDadosWhatsApp()" class="btn-secondary" style="margin-top: 8px;">✨ Extrair Dados Automaticamente</button>
+    </div>
+    
     <label style="display: block; font-weight: 700; margin-bottom: 6px;">Nome *</label>
     <input type="text" id="cad-nome" class="input-field" placeholder="Nome do prestador">
     <label style="display: block; font-weight: 700; margin-bottom: 6px;">Telefone *</label>
@@ -416,7 +422,6 @@ async function abrirDetalhe(prestId) {
   const resumo = resumoAvaliacoes[p.id] || {indica:0, nao_indica:0};
   const total = resumo.indica + resumo.nao_indica;
   
-  // Carregar preços deste prestador
   const resPrecos = await fetch(`/api/prestadores/${p.id}/precos`, { headers: {'Authorization': `Bearer ${token}`} });
   const precos = await resPrecos.json();
   
@@ -429,7 +434,7 @@ async function abrirDetalhe(prestId) {
       <p style="color: #718096; font-size: 14px;">${p.tipo} · ${p.categoria_nome}</p>
       ${p.diferencial ? `<p style="font-style: italic; color: #718096; margin-top: 10px;">"${p.diferencial}"</p>` : ''}
       <div style="display: flex; align-items: center; gap: 10px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-        <span style="font-size: 15px; font-weight: 700; flex: 1;">${p.telefone.startsWith('+55') ? p.telefone : '+55 ' + p.telefone}</span>
+        <span style="font-size: 15px; font-weight: 700; flex: 1;">${formatarTelefone(p.telefone)}</span>
         <a href="https://wa.me/${p.telefone.replace(/\D/g,'')}" target="_blank" class="btn-whats"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
         <a href="tel:${p.telefone.replace(/\D/g,'')}" class="btn-ligar"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
       </div>
@@ -441,8 +446,16 @@ async function abrirDetalhe(prestId) {
       ${ehAdmin ? `
         <div style="margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
           <h4 style="font-size: 14px; margin-bottom: 8px;">Adicionar Preço (Admin)</h4>
-          <input type="text" id="preco-tipo" class="input-field" placeholder="Ex: Visita, Hora, Peça">
-          <input type="number" id="preco-valor" class="input-field" placeholder="Valor (R$)">
+          <select id="preco-tipo" class="input-field" onchange="toggleOutrosPreco()">
+            <option value="Diária">Diária</option>
+            <option value="Por Hora">Por Hora</option>
+            <option value="Mensal">Mensal</option>
+            <option value="Por Visita">Por Visita</option>
+            <option value="Por Serviço">Por Serviço</option>
+            <option value="Outros">Outros</option>
+          </select>
+          <input type="text" id="preco-tipo-outros" class="input-field hidden" placeholder="Digite o tipo personalizado">
+          <input type="number" id="preco-valor" class="input-field" placeholder="Valor (R$)" step="0.01">
           <button onclick="salvarPrecoPrestador(${p.id})" class="btn-secondary">Adicionar Preço</button>
         </div>
       ` : ''}
@@ -594,8 +607,8 @@ async function salvarNovaCategoria() {
   });
   if (res.ok) {
     alert('Categoria criada com sucesso!');
-    await carregarCategorias(); // Atualiza a lista global
-    carregarCategoriasAdmin(); // Atualiza a tela do admin
+    await carregarCategorias();
+    carregarCategoriasAdmin();
     document.getElementById('nova-cat-nome').value = '';
   } else {
     alert('Erro ao criar: ' + (await res.json()).error);
@@ -668,11 +681,17 @@ async function salvarPrestador() {
 }
 
 // --- FUNÇÕES DE PREÇOS E GRÁFICO ---
-
 async function salvarPrecoPrestador(prestadorId) {
-  const tipo_preco = document.getElementById('preco-tipo').value.trim();
+  let tipo_preco = document.getElementById('preco-tipo').value.trim();
   const valor = document.getElementById('preco-valor').value;
-  if (!tipo_preco || !valor) { alert('Preencha o tipo e o valor'); return; }
+  
+  // Se escolheu "Outros", usa o valor digitado no campo personalizado
+  if (tipo_preco === 'Outros') {
+    tipo_preco = document.getElementById('preco-tipo-outros').value.trim();
+    if (!tipo_preco) { alert('Digite o tipo personalizado'); return; }
+  }
+  
+  if (!valor) { alert('Preencha o valor'); return; }
 
   const res = await fetch(`/api/prestadores/${prestadorId}/precos`, {
     method: 'POST', headers: {'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json'},
@@ -681,9 +700,22 @@ async function salvarPrecoPrestador(prestadorId) {
   
   if (res.ok) {
     alert('Preço adicionado!');
-    abrirDetalhe(prestadorId); // Recarrega a tela
+    abrirDetalhe(prestadorId);
   } else {
     alert('Erro ao salvar preço');
+  }
+}
+
+// Mostra/esconde o campo "Outros" no formulário de preço
+function toggleOutrosPreco() {
+  const select = document.getElementById('preco-tipo');
+  const campoOutros = document.getElementById('preco-tipo-outros');
+  if (select.value === 'Outros') {
+    campoOutros.classList.remove('hidden');
+    campoOutros.focus();
+  } else {
+    campoOutros.classList.add('hidden');
+    campoOutros.value = '';
   }
 }
 
@@ -708,13 +740,12 @@ async function renderizarGraficoPrecos(categoriaId) {
     return;
   }
 
-  // Agrupar por tipo de preço para o gráfico
   const tiposUnicos = [...new Set(dados.map(d => d.tipo_preco))];
   const labels = tiposUnicos;
   const dataValues = tiposUnicos.map(tipo => {
     const itens = dados.filter(d => d.tipo_preco === tipo);
     const soma = itens.reduce((acc, curr) => acc + parseFloat(curr.valor || 0), 0);
-    return (soma / itens.length).toFixed(2); // Média
+    return (soma / itens.length).toFixed(2);
   });
 
   const ctx = document.getElementById('graficoPrecos').getContext('2d');
@@ -739,7 +770,6 @@ async function renderizarGraficoPrecos(categoriaId) {
     }
   });
 
-  // Lista detalhada abaixo do gráfico
   listaDiv.innerHTML = '<h4 style="margin: 20px 0 10px 0; font-weight:700;">Detalhamento:</h4>' + 
     dados.map(d => `
       <div class="card-detalhe" style="padding: 12px; display:flex; justify-content:space-between; align-items:center;">
@@ -750,6 +780,83 @@ async function renderizarGraficoPrecos(categoriaId) {
         <div style="font-weight:800; color:var(--teal-dark); font-size:18px;">R$ ${parseFloat(d.valor).toFixed(2)}</div>
       </div>
     `).join('');
+}
+
+// --- FUNÇÃO MÁGICA: EXTRAIR DADOS DO WHATSAPP ---
+function extrairDadosWhatsApp() {
+  const texto = document.getElementById('whatsapp-paste').value;
+  if (!texto.trim()) {
+    alert('Por favor, cole a mensagem do WhatsApp primeiro.');
+    return;
+  }
+
+  const matchTelefone = texto.match(/\(?\d{2}\)?\s?\d{4,5}-?\s?\d{4}/);
+  if (matchTelefone) {
+    let telefoneLimpo = matchTelefone[0].replace(/\D/g, '');
+    if (telefoneLimpo.length === 11) {
+      telefoneLimpo = `(${telefoneLimpo.slice(0,2)}) ${telefoneLimpo.slice(2,7)}-${telefoneLimpo.slice(7)}`;
+    } else if (telefoneLimpo.length === 10) {
+      telefoneLimpo = `(${telefoneLimpo.slice(0,2)}) ${telefoneLimpo.slice(2,6)}-${telefoneLimpo.slice(6)}`;
+    }
+    document.getElementById('cad-telefone').value = telefoneLimpo;
+  }
+
+  let categoriaEncontrada = null;
+  const textoLower = texto.toLowerCase();
+  const palavrasChave = {
+    'Eletricista': ['eletricista', 'luz', 'fio', 'tomada'],
+    'Encanador': ['encanador', 'cano', 'vazamento', 'pia'],
+    'Pintor': ['pintor', 'pintura', 'parede'],
+    'Diarista': ['diarista', 'faxina', 'limpeza', 'empregada'],
+    'Ar-condicionado': ['ar condicionado', 'ar-condicionado', 'climatização'],
+    'Jardineiro': ['jardineiro', 'jardim', 'grama', 'poda'],
+    'Marceneiro': ['marceneiro', 'móvel', 'madeira'],
+    'Dedetizador': ['dedetização', 'dedetizador', 'inseto', 'praga']
+  };
+
+  for (const [categoria, palavras] of Object.entries(palavrasChave)) {
+    if (palavras.some(palavra => textoLower.includes(palavra))) {
+      categoriaEncontrada = categoria;
+      break;
+    }
+  }
+
+  if (categoriaEncontrada) {
+    const select = document.getElementById('cad-categoria');
+    for (let i = 0; i < select.options.length; i++) {
+      if (select.options[i].text.toLowerCase().includes(categoriaEncontrada.toLowerCase())) {
+        select.selectedIndex = i;
+        break;
+      }
+    }
+  }
+
+  let textoSemTelefone = texto.replace(matchTelefone ? matchTelefone[0] : '', '');
+  let textoLimpo = textoSemTelefone.replace(/indicado|recomendo|contato|tel|telefone|whatsapp|zap|ótimo|otimo|bom|boa/gi, '').trim();
+  const possiveisNomes = textoLimpo.split(/[,;.]/)[0].trim().split(' ').slice(0, 3).join(' ');
+  if (possiveisNomes.length > 2) {
+    document.getElementById('cad-nome').value = possiveisNomes.charAt(0).toUpperCase() + possiveisNomes.slice(1);
+  }
+
+  alert('✨ Dados extraídos! Verifique se o nome e a categoria estão corretos.');
+}
+function formatarTelefone(telefone) {
+  // Remove tudo que não é número
+  let numeros = telefone.replace(/\D/g, '');
+  
+  // Se começa com 55 e tem mais de 11 dígitos, remove o 55 do início
+  if (numeros.startsWith('55') && numeros.length > 11) {
+    numeros = numeros.slice(2);
+  }
+  
+  // Formata: (44) 99999-9999
+  if (numeros.length === 11) {
+    return `(${numeros.slice(0,2)}) ${numeros.slice(2,7)}-${numeros.slice(7)}`;
+  } else if (numeros.length === 10) {
+    return `(${numeros.slice(0,2)}) ${numeros.slice(2,6)}-${numeros.slice(6)}`;
+  }
+  
+  return telefone; // Retorna original se não conseguir formatar
 }
 </script>
 </body>
