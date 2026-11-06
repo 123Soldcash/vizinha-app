@@ -427,7 +427,14 @@ app.get('/api/migrar-categorias', authenticate, (req, res) => {
     }
   });
 });
-
+// ROTA TEMPORÁRIA: Promover usuário logado a Admin
+// Use UMA VEZ e depois REMOVA!
+app.post('/api/admin/promover', authenticate, (req, res) => {
+  db.run(`UPDATE moradores SET eh_admin = 1, status = 'ativo', nome = 'Administrador', unidade = '101' WHERE id = ?`, [req.user.id], function(err) {
+    if (err) return res.status(500).json({ error: 'Erro ao promover' });
+    res.json({ sucesso: true, message: 'Você agora é Administrador! Recarregue a página!' });
+  });
+});
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
