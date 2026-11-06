@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vizinha - Villagio Bourbon</title>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', sans-serif; }
     body { background: #f7f9fc; color: #2d3748; min-height: 100vh; }
@@ -154,8 +154,24 @@
         <button onclick="showAdminTab('moradores')" class="admin-tab active" id="admin-tab-moradores">Moradores</button>
         <button onclick="showAdminTab('categorias')" class="admin-tab" id="admin-tab-categorias">Categorias</button>
         <button onclick="showAdminTab('mensagens')" class="admin-tab" id="admin-tab-mensagens">Mensagens</button>
+        <button onclick="showAdminTab('importar')" class="admin-tab" id="admin-tab-importar">Importar / Backup</button>
       </div>
       <div id="admin-moradores"></div><div id="admin-categorias" class="hidden"></div><div id="admin-mensagens" class="hidden"></div>
+      <div id="admin-importar" class="hidden">
+        <div class="card-detalhe">
+          <h4 style="margin-bottom:8px;color:var(--teal-dark);">📥 Importar prestadores em massa</h4>
+          <p style="font-size:13px;color:#718096;margin-bottom:10px;">Uma linha por prestador, separando com <b>|</b> ou <b>;</b>:<br><code>Nome | Telefone | Categoria | Tipo | Diferencial</code><br>Só nome, telefone e categoria são obrigatórios. Telefones já cadastrados são ignorados (pode rodar de novo sem duplicar).</p>
+          <textarea id="import-texto" class="input-field" style="min-height:220px;font-family:monospace;font-size:12px;" placeholder="João Silva | (44) 99999-1234 | Eletricista | Autônomo | 10 anos de experiência&#10;Maria Souza | 44988887777 | Diarista"></textarea>
+          <button onclick="importarPrestadores()" class="btn-primary">Importar</button>
+          <pre id="import-resultado" style="white-space:pre-wrap;font-size:12px;margin-top:12px;color:#2d3748;"></pre>
+        </div>
+        <div class="card-detalhe">
+          <h4 style="margin-bottom:8px;color:var(--teal-dark);">💾 Backup</h4>
+          <p style="font-size:13px;color:#718096;margin-bottom:10px;">Baixe uma cópia de todos os dados. Faça isso toda semana.</p>
+          <button onclick="baixarBackup()" class="btn-secondary">Baixar backup (JSON)</button>
+          <p id="health-info" style="font-size:12px;color:#718096;margin-top:10px;"></p>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -257,7 +273,8 @@ const iconesCategorias = {
   'Caixa de Gordura': '🍳', 'Solar Instalação': '☀️', 'Solar Manutenção': '🔧', 'Pet Shop': '🐾', 
   'Cuidador de Pet': '🐕', 'Reformas em Geral': '🔨', 'Passadeira de Roupas': '👕', 'Fonoaudióloga': '🗣️',
   'Restaurante': '🍽️', 'Pizzaria': '🍕', 'Lanchonete': '🍔', 'Marmitaria': '🍱', 'Açaí e Sorveteria': '🍦', 'Adega e Bebidas': '🍷',
-  'Pães': '🥖', 'Padaria': '🥐',
+  'Pães': '🥖', 'Padaria': '🥐', 'Vidros': '🪟', 'Reforma de Móveis e Estofados': '🛋️', 'Manutenção de Bicicletas': '🚲',
+  'Artesanato e Personalizados': '🎁', 'Comida Caseira e Marmitas': '🍲', 'Mudanças e Fretes': '🚚',
   'Outra': '➕' 
 };
 
@@ -334,7 +351,7 @@ async function abrirDetalhe(id) {
   const precos = await resP.json();
   
   // ✅ CORREÇÃO: Verifica admin de forma robusta
-  const ehAdminReal = ehAdmin === true || (user && user.eh_admin === true);
+  const ehAdminReal = !!ehAdmin || !!(user && user.eh_admin);
   const podeEditarPrestador = ehAdminReal || (user && p.cadastrado_por_morador_id === user.id);
 
   // ✅ NOVO: Detecta se é categoria de SAÚDE
@@ -438,11 +455,24 @@ function showTab(tab) {
   if(tab==='admin') { carregarMoradores(); carregarCategoriasAdmin(); carregarMensagens(); }
   if(tab==='precos') preencherSelectGrafico();
 }
-function showAdminTab(tab) { ['moradores','categorias','mensagens'].forEach(t=>{document.getElementById('admin-'+t).classList.add('hidden');document.getElementById('admin-tab-'+t).classList.remove('active');}); document.getElementById('admin-'+tab).classList.remove('hidden'); document.getElementById('admin-tab-'+tab).classList.add('active'); }
+function showAdminTab(tab) { if(tab==='importar') carregarHealth(); ['moradores','categorias','mensagens','importar'].forEach(t=>{document.getElementById('admin-'+t).classList.add('hidden');document.getElementById('admin-tab-'+t).classList.remove('active');}); document.getElementById('admin-'+tab).classList.remove('hidden'); document.getElementById('admin-tab-'+tab).classList.add('active'); }
 
 async function carregarMoradores() { const r=await fetch('/api/admin/moradores',{headers:{'Authorization':`Bearer ${token}`}}); const m=await r.json(); document.getElementById('admin-moradores').innerHTML=m.map(x=>`<div class="card-detalhe"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div><div style="font-weight:700;">${x.nome||'Sem nome'}</div><div style="font-size:13px;color:#718096;">Unidade: ${x.unidade||'---'} | Tel: ${x.telefone}</div></div><span style="background:${x.status==='ativo'?'#10b981':'#f59e0b'}20;color:${x.status==='ativo'?'#10b981':'#f59e0b'};padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;">${x.status.toUpperCase()}</span></div><div style="display:flex;gap:8px;"><button onclick="mudarStatusMorador(${x.id},'ativo')" style="flex:1;background:#10b981;color:white;border:none;padding:10px;border-radius:16px;font-weight:700;cursor:pointer;">Aprovar</button><button onclick="mudarStatusMorador(${x.id},'inativo')" style="flex:1;background:var(--coral);color:white;border:none;padding:10px;border-radius:16px;font-weight:700;cursor:pointer;">Inativar</button></div></div>`).join(''); }
 async function mudarStatusMorador(id,s) { await fetch(`/api/admin/moradores/${id}/status`,{method:'PATCH',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({status:s})}); carregarMoradores(); }
-async function carregarCategoriasAdmin() { const r=await fetch('/api/admin/categorias',{headers:{'Authorization':`Bearer ${token}`}}); const c=await r.json(); document.getElementById('admin-categorias').innerHTML=`<div class="card-detalhe"><h4 style="margin-bottom:10px;color:var(--teal-dark);">+ Adicionar Nova Categoria</h4><input type="text" id="nova-cat-nome" class="input-field" placeholder="Nome da categoria"><select id="nova-cat-grupo" class="input-field"><option value="Casa e Limpeza">Casa e Limpeza</option><option value="Obras e Reformas">Obras e Reformas</option><option value="Assistência Técnica e Instalações">Assistência Técnica e Instalações</option><option value="Saúde e Home Care">Saúde e Home Care</option><option value="Beleza e Bem-Estar">Beleza e Bem-Estar</option><option value="Família e Área Externa">Família e Área Externa</option><option value="Alimentação e Entregas">Alimentação e Entregas</option><option value="Educação e Idiomas">Educação e Idiomas</option><option value="Pets e Animais">Pets e Animais</option><option value="Outros">Outros</option></select><button onclick="salvarNovaCategoria()" class="btn-primary">Salvar Categoria</button></div>`+c.map(x=>`<div class="card-detalhe" style="display:flex;align-items:center;gap:12px;"><div style="width:16px;height:16px;border-radius:50%;background:${x.cor};"></div><div style="flex:1;"><div style="font-weight:700;">${x.nome}</div><div style="font-size:12px;color:#718096;">${x.grupo}</div></div></div>`).join(''); }
+async function carregarCategoriasAdmin() { const r=await fetch('/api/admin/categorias',{headers:{'Authorization':`Bearer ${token}`}}); const c=await r.json(); document.getElementById('admin-categorias').innerHTML=`<div class="card-detalhe"><h4 style="margin-bottom:10px;color:var(--teal-dark);">+ Adicionar Nova Categoria</h4><input type="text" id="nova-cat-nome" class="input-field" placeholder="Nome da categoria"><select id="nova-cat-grupo" class="input-field"><option value="Casa e Limpeza">Casa e Limpeza</option><option value="Obras e Reformas">Obras e Reformas</option><option value="Assistência Técnica e Instalações">Assistência Técnica e Instalações</option><option value="Saúde e Home Care">Saúde e Home Care</option><option value="Beleza e Bem-Estar">Beleza e Bem-Estar</option><option value="Família e Área Externa">Família e Área Externa</option><option value="Alimentação e Entregas">Alimentação e Entregas</option><option value="Educação e Idiomas">Educação e Idiomas</option><option value="Pets e Animais">Pets e Animais</option><option value="Outros">Outros</option></select><button onclick="salvarNovaCategoria()" class="btn-primary">Salvar Categoria</button></div>`+c.map(x=>`<div class="card-detalhe" style="display:flex;align-items:center;gap:12px;"><div style="width:16px;height:16px;border-radius:50%;background:${x.cor};"></div><div style="flex:1;"><div style="font-weight:700;">${x.nome}</div><div style="font-size:12px;color:#718096;">${x.grupo} · ${x.total_prestadores||0} prestador(es)</div></div>${(x.total_prestadores||0)===0?`<button class="btn-acao" title="Apagar" onclick="deletarCategoria(${x.id})">🗑️</button>`:''}</div>`).join(''); }
+async function deletarCategoria(id) { if(!confirm('Apagar esta categoria?')) return; const r=await fetch(`/api/admin/categorias/${id}`,{method:'DELETE',headers:{'Authorization':`Bearer ${token}`}}); if(!r.ok) return alert((await r.json()).error); await carregarCategorias(); carregarCategoriasAdmin(); }
+async function importarPrestadores() {
+  const linhas=document.getElementById('import-texto').value.split('\n').map(l=>l.trim()).filter(Boolean);
+  const lista=linhas.map(l=>{ const c=l.split(/\s*[|;]\s*/); return {nome:c[0],telefone:c[1],categoria:c[2],tipo:c[3]||'Autônomo',diferencial:c[4]||''}; });
+  if(!lista.length) return alert('Cole a lista primeiro');
+  const out=document.getElementById('import-resultado'); out.textContent='Importando '+lista.length+' linha(s)...';
+  const r=await fetch('/api/admin/importar-prestadores',{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({prestadores:lista})});
+  const d=await r.json(); if(!r.ok) { out.textContent='Erro: '+d.error; return; }
+  out.textContent=`✅ Importados: ${d.importados}\n↩️ Já existiam: ${d.ja_existiam}\n📁 Categorias novas: ${d.categorias_criadas.join(', ')||'nenhuma'}\n${d.erros.length?'⚠️ Erros:\n'+d.erros.join('\n'):''}`;
+  await carregarCategorias(); await carregarPrestadores(); renderizarCategorias(); carregarHealth();
+}
+async function baixarBackup() { const r=await fetch('/api/admin/backup',{headers:{'Authorization':`Bearer ${token}`}}); if(!r.ok) return alert('Erro no backup'); const b=await r.blob(); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='vizinha-backup-'+new Date().toISOString().slice(0,10)+'.json'; a.click(); }
+async function carregarHealth() { try { const d=await (await fetch('/api/health')).json(); document.getElementById('health-info').textContent=`Banco: ${d.banco} · Volume persistente: ${d.volume_persistente?'SIM ✅':'NÃO ⚠️'} · ${d.categorias} categorias · ${d.prestadores} prestadores · ${d.moradores} moradores`; } catch(e){} }
 async function salvarNovaCategoria() { const n=document.getElementById('nova-cat-nome').value.trim(); const g=document.getElementById('nova-cat-grupo').value; if(!n) return alert('Digite o nome'); await fetch('/api/admin/categorias',{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({nome:n,grupo:g})}); alert('Criada!'); await carregarCategorias(); carregarCategoriasAdmin(); document.getElementById('nova-cat-nome').value=''; }
 async function carregarMensagens() { const r=await fetch('/api/admin/mensagens',{headers:{'Authorization':`Bearer ${token}`}}); const m=await r.json(); document.getElementById('admin-mensagens').innerHTML=m.length===0?'<p style="text-align:center;color:#718096;padding:20px;">Nenhuma mensagem.</p>':m.map(x=>`<div class="card-detalhe"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="background:#f0fdfa;padding:3px 10px;border-radius:12px;font-size:11px;color:var(--teal-dark);font-weight:700;">${x.tipo}</span><span style="font-size:11px;color:#718096;">${new Date(x.created_at).toLocaleDateString('pt-BR')}</span></div><p style="font-size:14px;margin-bottom:8px;">${x.mensagem}</p><p style="font-size:12px;color:#718096;">De: ${x.morador_nome||'Desconhecido'} (Unidade ${x.unidade||'---'})</p></div>`).join(''); }
 async function carregarMinhasAvaliacoes() { const r=await fetch('/api/morador/avaliacoes',{headers:{'Authorization':`Bearer ${token}`}}); const a=await r.json(); document.getElementById('lista-minhas-avaliacoes').innerHTML=a.length===0?'<div class="card-detalhe" style="text-align:center;color:#718096;padding:30px;">Nenhuma avaliação.</div>':a.map(x=>`<div class="card-detalhe"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div style="font-weight:700;">${x.prestador_nome}</div><span style="background:${x.tipo==='indica'?'#f0fdfa':'#fff5f3'};color:${x.tipo==='indica'?'var(--teal-dark)':'var(--coral-dark)'};padding:4px 12px;border-radius:14px;font-size:12px;font-weight:700;">${x.tipo==='indica'?'😊 INDICA':'😠 NÃO INDICA'}</span></div>${x.comentario?`<p style="font-size:13px;color:#718096;font-style:italic;">"${x.comentario}"</p>`:''}</div>`).join(''); }
@@ -459,7 +489,7 @@ async function salvarPrestador() {
 
 function abrirModalEdicao(id) {
   const p=prestadores.find(x=>x.id===id); if(!p) return;
-  const ehAdminReal = ehAdmin === true || (user && user.eh_admin === true);
+  const ehAdminReal = !!ehAdmin || !!(user && user.eh_admin);
   if(!ehAdminReal && (!user || p.cadastrado_por_morador_id !== user.id)) return alert('Sem permissão');
   prestadorEditandoId=id;
   document.getElementById('edit-nome').value=p.nome||''; document.getElementById('edit-telefone').value=p.telefone||''; document.getElementById('edit-tipo').value=p.tipo||'Morador'; document.getElementById('edit-diferencial').value=p.diferencial||'';
@@ -528,6 +558,18 @@ function extrairDadosWhatsApp() {
   let st=t.replace(m?m[0]:'','').replace(/indicado|recomendo|contato|tel|telefone|whatsapp|zap|ótimo|otimo|bom|boa/gi,'').trim(); const nm=st.split(/[,;.]/)[0].trim().split(' ').slice(0,3).join(' '); if(nm.length>2) document.getElementById('cad-nome').value=nm.charAt(0).toUpperCase()+nm.slice(1);
   alert('✨ Dados extraídos!');
 }
+
+// Mantém logado ao recarregar a página
+(async function restaurarSessao() {
+  if (!token || !user) return;
+  const r = await fetch('/api/morador/perfil', { headers: {'Authorization': `Bearer ${token}`} });
+  if (!r.ok) { localStorage.clear(); return; }
+  ehAdmin = !!user.eh_admin;
+  document.getElementById('screen-login').classList.add('hidden');
+  document.getElementById('screen-app').classList.remove('hidden');
+  if (ehAdmin) document.getElementById('btn-admin').classList.remove('hidden');
+  await initApp();
+})();
 </script>
 </body>
 </html>
