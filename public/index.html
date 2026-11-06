@@ -145,7 +145,7 @@
         <span>🔍</span>
         <input type="text" id="busca-prestador" oninput="filtrarCategorias()" placeholder="Buscar pelo nome ou serviço">
       </div>
-      <button onclick="abrirModalCadastro()" class="btn-cadastrar">+ Cadastrar prestador</button>
+      <button id="btn-cadastrar-prestador" onclick="abrirModalCadastro()" class="btn-cadastrar hidden">+ Cadastrar prestador</button>
       <div id="lista-categorias"></div>
     </div>
 
@@ -322,8 +322,12 @@ async function initApp() {
   await carregarResumoAvaliacoes();
   renderizarCategorias();
   preencherSelectGrafico();
+  
+  // Mostra o botão de cadastrar prestador apenas para admins
+  if (ehAdmin) {
+    document.getElementById('btn-cadastrar-prestador').classList.remove('hidden');
+  }
 }
-
 async function carregarCategorias() {
   const res = await fetch('/api/categorias', { headers: {'Authorization': `Bearer ${token}`} });
   categorias = await res.json();
