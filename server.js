@@ -23,7 +23,7 @@ if (process.argv.includes('--init-db')) {
     db.run(`CREATE TABLE IF NOT EXISTS precos (id INTEGER PRIMARY KEY, condominio_id INTEGER, prestador_id INTEGER, tipo_preco TEXT, valor REAL, data_referencia DATE, inclui_transporte BOOLEAN DEFAULT 0, inclui_produtos BOOLEAN DEFAULT 0, telefone TEXT)`);
     db.run(`CREATE TABLE IF NOT EXISTS mensagens (id INTEGER PRIMARY KEY, condominio_id INTEGER, morador_id INTEGER, tipo TEXT, mensagem TEXT, lida BOOLEAN DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`);
     db.run(`INSERT OR IGNORE INTO condominios (id, nome) VALUES (1, 'Villagio Bourbon')`);
-    db.run(`INSERT OR IGNORE INTO moradores (condominio_id, nome, unidade, telefone, status, eh_admin, aceite_termos_data) VALUES (1, 'Administrador Teste', '101', '11999999999', 'ativo', 1, CURRENT_TIMESTAMP)`);
+    db.run(`INSERT OR IGNORE INTO moradores (condominio_id, nome, unidade, telefone, status, eh_admin, aceite_termos_data) VALUES (1, 'Administrador', '101', '11999999999', 'ativo', 1, CURRENT_TIMESTAMP)`);
     console.log('Banco de dados inicializado com sucesso.');
   });
   process.exit(0);
@@ -223,7 +223,7 @@ app.patch('/api/prestadores/:id', authenticate, (req, res) => {
   });
 });
 
-// ✅ ROTA TEMPORÁRIA PARA PROMOVER ADMIN
+// ✅ ROTA TEMPORÁRIA: Promover usuário a Admin
 app.post('/api/admin/promover', authenticate, (req, res) => {
   db.run(`UPDATE moradores SET eh_admin = 1, status = 'ativo', nome = 'Administrador', unidade = '101' WHERE id = ?`, [req.user.id], function(err) {
     if (err) return res.status(500).json({ error: 'Erro ao promover' });
@@ -231,31 +231,159 @@ app.post('/api/admin/promover', authenticate, (req, res) => {
   });
 });
 
-// ✅ ROTA DE MIGRAÇÃO (protegida - só admin)
-app.get('/api/migrar-categorias', authenticate, (req, res) => {
+// ✅ ROTA DEFINITIVA: Organizar categorias e prestadores
+// Use UMA VEZ e depois REMOVA!
+app.get('/api/organizar-tudo', authenticate, (req, res) => {
   if (!req.user.eh_admin) return res.status(403).json({ error: 'Apenas admin' });
-  const migracoes = {
-    'Reformas em Geral': 'Obras e Reformas', 'Reforma de Cadeiras e Sofá': 'Obras e Reformas', 'Calhas': 'Obras e Reformas',
-    'Médico': 'Saúde e Home Care', 'Dentista': 'Saúde e Home Care', 'Psicólogo': 'Saúde e Home Care', 'Fonoaudióloga': 'Saúde e Home Care',
-    'Cortinas': 'Casa e Limpeza', 'Caixa de Gordura': 'Casa e Limpeza', 'Passadeira de Roupas': 'Casa e Limpeza',
-    'Vidros PVC': 'Assistência Técnica e Instalações', 'Porta e Janelas': 'Assistência Técnica e Instalações', 'Tela de Proteção': 'Assistência Técnica e Instalações', 'Solar Instalação': 'Assistência Técnica e Instalações', 'Solar Manutenção': 'Assistência Técnica e Instalações',
-    'Doces e Bolos': 'Alimentação e Entregas', 'Cozinheiro/Chef/Churrasqueiro': 'Alimentação e Entregas',
-    'Professor de Tênis': 'Educação e Idiomas', 'Professor de Inglês': 'Educação e Idiomas', 'Espanhol': 'Educação e Idiomas',
-    'Pet Shop': 'Pets e Animais', 'Cuidador de Pet': 'Pets e Animais',
-    'Corretor de Imóveis': 'Família e Área Externa', 'Bicicleta': 'Família e Área Externa',
+  
+  const resultados = { categorias_criadas: 0, prestadores_movidos: 0, detalhes: [] };
+  let etapasConcluidas = 0;
+  const totalEtapas = 3;
+  
+  const finalizar = () => {
+    etapasConcluidas++;
+    if (etapasConcluidas === totalEtapas) {
+      res.json(resultados);
+    }
   };
-  const results = [];
-  let completed = 0;
-  const total = Object.keys(migracoes).length + 2;
-  for (const [nome, novoGrupo] of Object.entries(migracoes)) {
-    db.run(`UPDATE categorias SET grupo = ? WHERE nome = ? AND grupo = 'Outros'`, [novoGrupo, nome], function(err) {
-      if (!err && this.changes > 0) results.push(`${nome} → ${novoGrupo}`);
-      completed++;
-      if (completed === total) res.json({ sucesso: true, total: results.length, detalhes: results });
+  
+  // ETAPA 1: Criar categorias faltantes
+  const novasCategorias = [
+    { nome: 'Vidros', grupo: 'Assistência Técnica e Instalações', cor: '#7c3aed' },
+    { nome: 'Porta e Janelas', grupo: 'Assistência Técnica e Instalações', cor: '#7c3aed' },
+    { nome: 'Tela de Proteção', grupo: 'Assistência Técnica e Instalações', cor: '#7c3aed' },
+    { nome: 'Cortinas', grupo: 'Casa e Limpeza', cor: '#4FB8B8' },
+    { nome: 'Doces e Bolos', grupo: 'Alimentação e Entregas', cor: '#059669' },
+    { nome: 'Reforma de Móveis e Estofados', grupo: 'Obras e Reformas', cor: '#d97706' },
+    { nome: 'Professor de Tênis', grupo: 'Educação e Idiomas', cor: '#8b5cf6' },
+    { nome: 'Manutenção de Bicicletas', grupo: 'Assistência Técnica e Instalações', cor: '#7c3aed' },
+    { nome: 'Artesanato e Personalizados', grupo: 'Outros', cor: '#6b7280' },
+    { nome: 'Comida Caseira e Marmitas', grupo: 'Alimentação e Entregas', cor: '#059669' },
+    { nome: 'Mudanças e Fretes', grupo: 'Família e Área Externa', cor: '#475569' },
+    { nome: 'Pães', grupo: 'Alimentação e Entregas', cor: '#059669' },
+    { nome: 'Padaria', grupo: 'Alimentação e Entregas', cor: '#059669' },
+    { nome: 'Restaurante', grupo: 'Alimentação e Entregas', cor: '#059669' },
+    { nome: 'Pizzaria', grupo: 'Alimentação e Entregas', cor: '#059669' },
+    { nome: 'Lanchonete', grupo: 'Alimentação e Entregas', cor: '#059669' },
+    { nome: 'Marmitaria', grupo: 'Alimentação e Entregas', cor: '#059669' },
+    { nome: 'Açaí e Sorveteria', grupo: 'Alimentação e Entregas', cor: '#059669' },
+    { nome: 'Adega e Bebidas', grupo: 'Alimentação e Entregas', cor: '#059669' },
+    { nome: 'Médico', grupo: 'Saúde e Home Care', cor: '#dc2626' },
+    { nome: 'Dentista', grupo: 'Saúde e Home Care', cor: '#dc2626' },
+    { nome: 'Psicólogo', grupo: 'Saúde e Home Care', cor: '#dc2626' },
+    { nome: 'Fonoaudióloga', grupo: 'Saúde e Home Care', cor: '#dc2626' },
+    { nome: 'Corretor de Imóveis', grupo: 'Família e Área Externa', cor: '#475569' },
+    { nome: 'Reformas em Geral', grupo: 'Obras e Reformas', cor: '#d97706' },
+    { nome: 'Calhas', grupo: 'Obras e Reformas', cor: '#d97706' },
+    { nome: 'Pet Shop', grupo: 'Pets e Animais', cor: '#10b981' },
+    { nome: 'Cuidador de Pet', grupo: 'Pets e Animais', cor: '#10b981' },
+    { nome: 'Professor de Inglês', grupo: 'Educação e Idiomas', cor: '#8b5cf6' },
+    { nome: 'Espanhol', grupo: 'Educação e Idiomas', cor: '#8b5cf6' }
+  ];
+  
+  let catsCriadas = 0;
+  novasCategorias.forEach(cat => {
+    db.run(`INSERT OR IGNORE INTO categorias (condominio_id, nome, grupo, cor) VALUES (1, ?, ?, ?)`, [cat.nome, cat.grupo, cat.cor], function(err) {
+      if (!err && this.changes > 0) {
+        resultados.categorias_criadas++;
+        resultados.detalhes.push(`📁 Categoria criada: ${cat.nome}`);
+      }
+      catsCriadas++;
+      if (catsCriadas === novasCategorias.length) finalizar();
     });
-  }
-  db.run(`INSERT OR IGNORE INTO categorias (condominio_id, nome, grupo, cor) VALUES (1, 'Pães', 'Alimentação e Entregas', '#059669')`, function(err) { if (!err && this.changes > 0) results.push('Pães criada'); completed++; if (completed === total) res.json({ sucesso: true, total: results.length, detalhes: results }); });
-  db.run(`INSERT OR IGNORE INTO categorias (condominio_id, nome, grupo, cor) VALUES (1, 'Padaria', 'Alimentação e Entregas', '#059669')`, function(err) { if (!err && this.changes > 0) results.push('Padaria criada'); completed++; if (completed === total) res.json({ sucesso: true, total: results.length, detalhes: results }); });
+  });
+  
+  // ETAPA 2: Buscar todas as categorias e prestadores
+  db.all(`SELECT * FROM categorias WHERE condominio_id = 1`, [], (err, categorias) => {
+    if (err) { finalizar(); return; }
+    
+    db.all(`SELECT * FROM prestadores WHERE condominio_id = 1`, [], (err, prestadores) => {
+      if (err) { finalizar(); return; }
+      
+      // ETAPA 3: Mover prestadores baseado em palavras-chave
+      const regras = [
+        { palavra: 'mudanc', categoria: 'Mudanças e Fretes' },
+        { palavra: 'porta', categoria: 'Porta e Janelas' },
+        { palavra: 'janela', categoria: 'Porta e Janelas' },
+        { palavra: 'imóvel', categoria: 'Corretor de Imóveis' },
+        { palavra: 'imovel', categoria: 'Corretor de Imóveis' },
+        { palavra: 'tela', categoria: 'Tela de Proteção' },
+        { palavra: 'pressurizador', categoria: 'Assistência Técnica e Instalações' },
+        { palavra: 'cortina', categoria: 'Cortinas' },
+        { palavra: 'colcha', categoria: 'Cortinas' },
+        { palavra: 'almofad', categoria: 'Cortinas' },
+        { palavra: 'docinh', categoria: 'Doces e Bolos' },
+        { palavra: 'brigadeir', categoria: 'Doces e Bolos' },
+        { palavra: 'doce amor', categoria: 'Doces e Bolos' },
+        { palavra: 'vidro', categoria: 'Vidros' },
+        { palavra: 'k3', categoria: 'Vidros' },
+        { palavra: 'sofá', categoria: 'Reforma de Móveis e Estofados' },
+        { palavra: 'sofa', categoria: 'Reforma de Móveis e Estofados' },
+        { palavra: 'tênis', categoria: 'Professor de Tênis' },
+        { palavra: 'tenis', categoria: 'Professor de Tênis' },
+        { palavra: 'bike', categoria: 'Manutenção de Bicicletas' },
+        { palavra: 'bicicleta', categoria: 'Manutenção de Bicicletas' },
+        { palavra: 'personalizado', categoria: 'Artesanato e Personalizados' },
+        { palavra: 'copo', categoria: 'Artesanato e Personalizados' },
+        { palavra: 'feijão', categoria: 'Comida Caseira e Marmitas' },
+        { palavra: 'feijao', categoria: 'Comida Caseira e Marmitas' },
+        { palavra: 'grill', categoria: 'Comida Caseira e Marmitas' },
+        { palavra: 'churrasqueir', categoria: 'Comida Caseira e Marmitas' },
+        { palavra: 'pão', categoria: 'Pães' },
+        { palavra: 'pao', categoria: 'Pães' },
+        { palavra: 'padaria', categoria: 'Padaria' },
+        { palavra: 'restaurante', categoria: 'Restaurante' },
+        { palavra: 'pizzaria', categoria: 'Pizzaria' },
+        { palavra: 'lanchonete', categoria: 'Lanchonete' },
+        { palavra: 'marmita', categoria: 'Marmitaria' },
+        { palavra: 'açaí', categoria: 'Açaí e Sorveteria' },
+        { palavra: 'acai', categoria: 'Açaí e Sorveteria' },
+        { palavra: 'sorvete', categoria: 'Açaí e Sorveteria' },
+        { palavra: 'adega', categoria: 'Adega e Bebidas' },
+        { palavra: 'bebida', categoria: 'Adega e Bebidas' }
+      ];
+      
+      let movidos = 0;
+      let processados = 0;
+      
+      prestadores.forEach(p => {
+        if (p.categoria_principal_id === 2) { // Apenas "Outra"
+          const nomeLower = p.nome.toLowerCase();
+          let movido = false;
+          
+          for (const regra of regras) {
+            if (nomeLower.includes(regra.palavra)) {
+              const catDestino = categorias.find(c => c.nome === regra.categoria);
+              if (catDestino && p.categoria_principal_id !== catDestino.id) {
+                db.run(`UPDATE prestadores SET categoria_principal_id = ? WHERE id = ?`, [catDestino.id, p.id], function(err) {
+                  if (!err && this.changes > 0) {
+                    resultados.prestadores_movidos++;
+                    resultados.detalhes.push(`✅ ${p.nome} → ${regra.categoria}`);
+                  }
+                  processados++;
+                  if (processados === prestadores.filter(x => x.categoria_principal_id === 2).length) finalizar();
+                });
+              } else {
+                processados++;
+                if (processados === prestadores.filter(x => x.categoria_principal_id === 2).length) finalizar();
+              }
+              movido = true;
+              break;
+            }
+          }
+          
+          if (!movido) {
+            processados++;
+            if (processados === prestadores.filter(x => x.categoria_principal_id === 2).length) finalizar();
+          }
+        }
+      });
+      
+      // Se não há prestadores em "Outra", finaliza imediatamente
+      const outrosCount = prestadores.filter(x => x.categoria_principal_id === 2).length;
+      if (outrosCount === 0) finalizar();
+    });
+  });
 });
 
 app.get('/', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'index.html')); });
