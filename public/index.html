@@ -65,6 +65,7 @@
     
     .btn-whats { background: #25d366; border: none; width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     .btn-ligar { background: var(--teal); border: none; width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .btn-editar { background: #f59e0b; border: none; width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; flex-shrink: 0; }
     .btn-whats svg, .btn-ligar svg { width: 22px; height: 22px; fill: white; }
     
     .btn-primary { background: var(--teal); color: white; border: none; padding: 14px; border-radius: 20px; font-weight: 700; font-size: 15px; cursor: pointer; width: 100%; margin-top: 12px; }
@@ -145,7 +146,7 @@
         <span>🔍</span>
         <input type="text" id="busca-prestador" oninput="filtrarCategorias()" placeholder="Buscar pelo nome ou serviço">
       </div>
-      <button id="btn-cadastrar-prestador" onclick="abrirModalCadastro()" class="btn-cadastrar hidden">+ Cadastrar prestador</button>
+      <button onclick="abrirModalCadastro()" class="btn-cadastrar">+ Cadastrar prestador</button>
       <div id="lista-categorias"></div>
     </div>
 
@@ -241,8 +242,35 @@
   </div>
 </div>
 
+<!-- MODAL EDIÇÃO -->
+<div id="modal-edicao" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: flex-end; justify-content: center;">
+  <div style="background: white; width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 24px; max-height: 90vh; overflow-y: auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <h3 style="font-size: 20px; font-weight: 800;">Editar Prestador</h3>
+      <button onclick="fecharModalEdicao()" style="background: none; border: none; font-size: 24px; cursor: pointer;">✕</button>
+    </div>
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Nome *</label>
+    <input type="text" id="edit-nome" class="input-field" placeholder="Nome do prestador">
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Telefone *</label>
+    <input type="tel" id="edit-telefone" class="input-field" placeholder="(44) 99999-9999">
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Tipo *</label>
+    <select id="edit-tipo" class="input-field">
+      <option value="Autônomo">Autônomo</option>
+      <option value="Empresa">Empresa</option>
+    </select>
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Categoria *</label>
+    <select id="edit-categoria" class="input-field"><option value="">Selecione...</option></select>
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Diferencial</label>
+    <textarea id="edit-diferencial" class="input-field" placeholder="Ex: 10 anos de experiência"></textarea>
+    <button onclick="salvarEdicaoPrestador()" class="btn-primary">Salvar Alterações</button>
+  </div>
+</div>
+
 <script>
 let token = localStorage.getItem('vizinha_token');
+let user = null;
+const storedUser = localStorage.getItem('vizinha_user');
+if (storedUser) { try { user = JSON.parse(storedUser); } catch(e) {} }
 let categorias = [];
 let prestadores = [];
 let resumoAvaliacoes = {};
@@ -253,6 +281,7 @@ let categoriaAtualNome = null;
 let prestadorAtual = null;
 let tipoAvaliacao = null;
 let chartInstance = null;
+let prestadorEditandoId = null;
 
 const iconesCategorias = {
   'Diarista': '🧹', 'Mensalista': '👷', 'Babá': '👶', 'Cuidador de idoso': '👴',
@@ -295,9 +324,12 @@ async function verifySMS() {
   const res = await fetch('/api/login/verify', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({telefone: phone, codigo: code}) });
   const data = await res.json();
   if (res.ok) {
-    token = data.token; ehAdmin = data.eh_admin;
+    token = data.token; 
+    ehAdmin = data.eh_admin;
+    user = { id: data.id, telefone: data.telefone, eh_admin: data.eh_admin };
     localStorage.setItem('vizinha_token', token);
     localStorage.setItem('vizinha_admin', ehAdmin ? '1' : '0');
+    localStorage.setItem('vizinha_user', JSON.stringify(user));
     document.getElementById('screen-login').classList.add('hidden');
     document.getElementById('screen-app').classList.remove('hidden');
     if (ehAdmin) document.getElementById('btn-admin').classList.remove('hidden');
@@ -313,6 +345,7 @@ function backToPhone() {
 function logout() {
   localStorage.removeItem('vizinha_token');
   localStorage.removeItem('vizinha_admin');
+  localStorage.removeItem('vizinha_user');
   location.reload();
 }
 
@@ -322,12 +355,8 @@ async function initApp() {
   await carregarResumoAvaliacoes();
   renderizarCategorias();
   preencherSelectGrafico();
-  
-  // Mostra o botão de cadastrar prestador apenas para admins
-  if (ehAdmin) {
-    document.getElementById('btn-cadastrar-prestador').classList.remove('hidden');
-  }
 }
+
 async function carregarCategorias() {
   const res = await fetch('/api/categorias', { headers: {'Authorization': `Bearer ${token}`} });
   categorias = await res.json();
@@ -432,36 +461,39 @@ async function abrirDetalhe(prestId) {
   let htmlPrecos = precos.length === 0 ? '<p style="color:#718096; font-size:14px;">Nenhum preço cadastrado.</p>' : 
     precos.map(pr => `<div class="preco-item"><span>${pr.tipo_preco}</span><span class="preco-valor">R$ ${parseFloat(pr.valor).toFixed(2)}</span></div>`).join('');
 
+  const podeEditar = ehAdmin || (user && p.cadastrado_por_morador_id === user.id);
+
   document.getElementById('conteudo-detalhe').innerHTML = `
     <div class="card-detalhe">
       <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">${p.nome}</h2>
       <p style="color: #718096; font-size: 14px;">${p.tipo} · ${p.categoria_nome}</p>
       ${p.diferencial ? `<p style="font-style: italic; color: #718096; margin-top: 10px;">"${p.diferencial}"</p>` : ''}
       <div style="display: flex; align-items: center; gap: 10px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+        ${podeEditar ? `<button onclick="abrirModalEdicao(${p.id})" class="btn-editar" title="Editar">✏️</button>` : ''}
         <span style="font-size: 15px; font-weight: 700; flex: 1;">${formatarTelefone(p.telefone)}</span>
         <a href="https://wa.me/${p.telefone.replace(/\D/g,'')}" target="_blank" class="btn-whats"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
         <a href="tel:${p.telefone.replace(/\D/g,'')}" class="btn-ligar"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
       </div>
     </div>
     
-<div class="card-detalhe">
-  <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">💰 Tabela de Preços</h3>
-  ${htmlPrecos}
-  <div style="margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-    <h4 style="font-size: 14px; margin-bottom: 8px;">💰 Conhece os preços? Contribua!</h4>
-    <select id="preco-tipo" class="input-field" onchange="toggleOutrosPreco()">
-      <option value="Diária">Diária</option>
-      <option value="Por Hora">Por Hora</option>
-      <option value="Mensal">Mensal</option>
-      <option value="Por Visita">Por Visita</option>
-      <option value="Por Serviço">Por Serviço</option>
-      <option value="Outros">Outros</option>
-    </select>
-    <input type="text" id="preco-tipo-outros" class="input-field hidden" placeholder="Digite o tipo personalizado">
-    <input type="number" id="preco-valor" class="input-field" placeholder="Valor (R$)" step="0.01">
-    <button onclick="salvarPrecoPrestador(${p.id})" class="btn-secondary">Adicionar Preço</button>
-  </div>
-</div>
+    <div class="card-detalhe">
+      <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">💰 Tabela de Preços</h3>
+      ${htmlPrecos}
+      <div style="margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+        <h4 style="font-size: 14px; margin-bottom: 8px;">💰 Conhece os preços? Contribua!</h4>
+        <select id="preco-tipo" class="input-field" onchange="toggleOutrosPreco()">
+          <option value="Diária">Diária</option>
+          <option value="Por Hora">Por Hora</option>
+          <option value="Mensal">Mensal</option>
+          <option value="Por Visita">Por Visita</option>
+          <option value="Por Serviço">Por Serviço</option>
+          <option value="Outros">Outros</option>
+        </select>
+        <input type="text" id="preco-tipo-outros" class="input-field hidden" placeholder="Digite o tipo personalizado">
+        <input type="number" id="preco-valor" class="input-field" placeholder="Valor (R$)" step="0.01">
+        <button onclick="salvarPrecoPrestador(${p.id})" class="btn-secondary">Adicionar Preço</button>
+      </div>
+    </div>
 
     <div class="card-detalhe">
       <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Avaliações (${total})</h3>
@@ -682,12 +714,73 @@ async function salvarPrestador() {
   } else { alert('Erro: ' + (await res.json()).error); }
 }
 
+// --- FUNÇÕES DE EDIÇÃO DE PRESTADOR ---
+function abrirModalEdicao(prestadorId) {
+  const p = prestadores.find(x => x.id === prestadorId);
+  if (!p) return;
+  
+  if (!ehAdmin && (!user || p.cadastrado_por_morador_id !== user.id)) {
+    alert('Você não tem permissão para editar este prestador.');
+    return;
+  }
+  
+  prestadorEditandoId = prestadorId;
+  document.getElementById('edit-nome').value = p.nome || '';
+  document.getElementById('edit-telefone').value = p.telefone || '';
+  document.getElementById('edit-tipo').value = p.tipo || 'Autônomo';
+  document.getElementById('edit-diferencial').value = p.diferencial || '';
+  
+  const select = document.getElementById('edit-categoria');
+  select.innerHTML = '<option value="">Selecione...</option>';
+  categorias.forEach(c => {
+    select.innerHTML += `<option value="${c.id}" ${c.id === p.categoria_principal_id ? 'selected' : ''}>${c.nome} (${c.grupo})</option>`;
+  });
+  
+  document.getElementById('modal-edicao').classList.remove('hidden');
+}
+
+function fecharModalEdicao() {
+  document.getElementById('modal-edicao').classList.add('hidden');
+  prestadorEditandoId = null;
+}
+
+async function salvarEdicaoPrestador() {
+  if (!prestadorEditandoId) return;
+  
+  const nome = document.getElementById('edit-nome').value.trim();
+  const telefone = document.getElementById('edit-telefone').value.trim();
+  const tipo = document.getElementById('edit-tipo').value;
+  const categoria_id = document.getElementById('edit-categoria').value;
+  const diferencial = document.getElementById('edit-diferencial').value.trim();
+  
+  if (!nome || !telefone || !categoria_id) {
+    alert('Preencha nome, telefone e categoria');
+    return;
+  }
+  
+  const res = await fetch(`/api/prestadores/${prestadorEditandoId}`, {
+    method: 'PATCH',
+    headers: {'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json'},
+    body: JSON.stringify({ nome, telefone, tipo, categoria_id, diferencial })
+  });
+  
+  if (res.ok) {
+    alert('Prestador atualizado com sucesso!');
+    fecharModalEdicao();
+    await carregarPrestadores();
+    renderizarCategorias();
+    abrirDetalhe(prestadorEditandoId);
+  } else {
+    const data = await res.json();
+    alert('Erro: ' + data.error);
+  }
+}
+
 // --- FUNÇÕES DE PREÇOS E GRÁFICO ---
 async function salvarPrecoPrestador(prestadorId) {
   let tipo_preco = document.getElementById('preco-tipo').value.trim();
   const valor = document.getElementById('preco-valor').value;
   
-  // Se escolheu "Outros", usa o valor digitado no campo personalizado
   if (tipo_preco === 'Outros') {
     tipo_preco = document.getElementById('preco-tipo-outros').value.trim();
     if (!tipo_preco) { alert('Digite o tipo personalizado'); return; }
@@ -708,7 +801,6 @@ async function salvarPrecoPrestador(prestadorId) {
   }
 }
 
-// Mostra/esconde o campo "Outros" no formulário de preço
 function toggleOutrosPreco() {
   const select = document.getElementById('preco-tipo');
   const campoOutros = document.getElementById('preco-tipo-outros');
@@ -784,7 +876,19 @@ async function renderizarGraficoPrecos(categoriaId) {
     `).join('');
 }
 
-// --- FUNÇÃO MÁGICA: EXTRAIR DADOS DO WHATSAPP ---
+function formatarTelefone(telefone) {
+  let numeros = telefone.replace(/\D/g, '');
+  if (numeros.startsWith('55') && numeros.length > 11) {
+    numeros = numeros.slice(2);
+  }
+  if (numeros.length === 11) {
+    return `(${numeros.slice(0,2)}) ${numeros.slice(2,7)}-${numeros.slice(7)}`;
+  } else if (numeros.length === 10) {
+    return `(${numeros.slice(0,2)}) ${numeros.slice(2,6)}-${numeros.slice(6)}`;
+  }
+  return telefone;
+}
+
 function extrairDadosWhatsApp() {
   const texto = document.getElementById('whatsapp-paste').value;
   if (!texto.trim()) {
@@ -841,24 +945,6 @@ function extrairDadosWhatsApp() {
   }
 
   alert('✨ Dados extraídos! Verifique se o nome e a categoria estão corretos.');
-}
-function formatarTelefone(telefone) {
-  // Remove tudo que não é número
-  let numeros = telefone.replace(/\D/g, '');
-  
-  // Se começa com 55 e tem mais de 11 dígitos, remove o 55 do início
-  if (numeros.startsWith('55') && numeros.length > 11) {
-    numeros = numeros.slice(2);
-  }
-  
-  // Formata: (44) 99999-9999
-  if (numeros.length === 11) {
-    return `(${numeros.slice(0,2)}) ${numeros.slice(2,7)}-${numeros.slice(7)}`;
-  } else if (numeros.length === 10) {
-    return `(${numeros.slice(0,2)}) ${numeros.slice(2,6)}-${numeros.slice(6)}`;
-  }
-  
-  return telefone; // Retorna original se não conseguir formatar
 }
 </script>
 </body>

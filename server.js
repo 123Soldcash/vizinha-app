@@ -27,7 +27,7 @@ if (process.argv.includes('--init-db')) {
     
     // Dados iniciais
     db.run(`INSERT OR IGNORE INTO condominios (id, nome) VALUES (1, 'Villagio Bourbon')`);
-    db.run(`INSERT OR IGNORE INTO moradores (nome, unidade, telefone, status, eh_admin, aceite_termos_data) VALUES ('Administrador Teste', '101', '11999999999', 'ativo', 1, CURRENT_TIMESTAMP)`);
+    db.run(`INSERT OR IGNORE INTO moradores (condominio_id, nome, unidade, telefone, status, eh_admin, aceite_termos_data) VALUES (1, 'Administrador Teste', '101', '11999999999', 'ativo', 1, CURRENT_TIMESTAMP)`);
     console.log('Banco de dados inicializado com sucesso.');
   });
   process.exit(0);
@@ -67,7 +67,7 @@ app.post('/api/login/request', (req, res) => {
   });
 });
 
-// 2. Login: Verificar Código
+// 2. Login: Verificar Código (CORRIGIDO: agora retorna id e telefone)
 app.post('/api/login/verify', (req, res) => {
   const { telefone, codigo } = req.body;
   const cleanPhone = telefone.replace(/\D/g, '');
@@ -78,7 +78,15 @@ app.post('/api/login/verify', (req, res) => {
     if (row.status === 'inativo') return res.status(403).json({ error: 'Cadastro inativo' });
     
     const token = jwt.sign({ id: row.id, telefone: row.telefone, eh_admin: row.eh_admin, condominio_id: row.condominio_id }, SECRET, { expiresIn: '7d' });
-    res.json({ token, status: row.status, eh_admin: row.eh_admin, aceite_termos: !!row.aceite_termos_data });
+    
+    res.json({ 
+      token, 
+      id: row.id, 
+      telefone: row.telefone, 
+      status: row.status, 
+      eh_admin: row.eh_admin, 
+      aceite_termos: !!row.aceite_termos_data 
+    });
   });
 });
 
@@ -130,6 +138,7 @@ app.post('/api/avaliacoes', authenticate, (req, res) => {
     res.json({ success: true });
   });
 });
+
 // 5.5. Buscar avaliação atual do morador
 app.get('/api/avaliacoes/minha/:prestador_id', authenticate, (req, res) => {
   const prestador_id = req.params.prestador_id;
@@ -141,7 +150,8 @@ app.get('/api/avaliacoes/minha/:prestador_id', authenticate, (req, res) => {
     res.json(row || null);
   });
 });
-// 5.9. Resumo de avaliações de TODOS os prestadores (para mostrar nos cards)
+
+// 5.9. Resumo de avaliações de TODOS os prestadores
 app.get('/api/prestadores/avaliacoes-resumo', authenticate, (req, res) => {
   db.all(`
     SELECT prestador_id, 
@@ -155,6 +165,7 @@ app.get('/api/prestadores/avaliacoes-resumo', authenticate, (req, res) => {
     res.json(rows);
   });
 });
+
 // 6. Resumo de Avaliações
 app.get('/api/prestadores/:id/avaliacoes', authenticate, (req, res) => {
   const prestador_id = req.params.id;
@@ -166,6 +177,7 @@ app.get('/api/prestadores/:id/avaliacoes', authenticate, (req, res) => {
     res.json({ indica, nao_indica, comentarios });
   });
 });
+
 // 6.5. Cadastrar Prestador
 app.post('/api/prestadores', authenticate, (req, res) => {
   const { nome, telefone, tipo, categoria_id, diferencial, endereco, email } = req.body;
@@ -197,6 +209,7 @@ app.get('/api/categorias', authenticate, (req, res) => {
     res.json(rows);
   });
 });
+
 // 7.1. Listar Moradores Pendentes (só Administrador)
 app.get('/api/admin/moradores', authenticate, (req, res) => {
   if (!req.user.eh_admin) return res.status(403).json({ error: 'Acesso negado' });
@@ -210,7 +223,7 @@ app.get('/api/admin/moradores', authenticate, (req, res) => {
 // 7.2. Aprovar/Rejeitar Morador
 app.patch('/api/admin/moradores/:id/status', authenticate, (req, res) => {
   if (!req.user.eh_admin) return res.status(403).json({ error: 'Acesso negado' });
-  const { status } = req.body; // 'ativo' ou 'inativo'
+  const { status } = req.body;
   db.run(`UPDATE moradores SET status = ? WHERE id = ? AND condominio_id = ?`, 
     [status, req.params.id, req.user.condominio_id], (err) => {
     if (err) return res.status(500).json({ error: 'Erro ao atualizar' });
@@ -238,6 +251,7 @@ app.delete('/api/admin/prestadores/:id', authenticate, (req, res) => {
     res.json({ success: true });
   });
 });
+
 // 7.4.5. Listar Categorias (admin)
 app.get('/api/admin/categorias', authenticate, (req, res) => {
   if (!req.user.eh_admin) return res.status(403).json({ error: 'Acesso negado' });
@@ -247,6 +261,7 @@ app.get('/api/admin/categorias', authenticate, (req, res) => {
     res.json(rows);
   });
 });
+
 // 7.5. Criar Categoria
 app.post('/api/admin/categorias', authenticate, (req, res) => {
   if (!req.user.eh_admin) return res.status(403).json({ error: 'Acesso negado' });
@@ -296,6 +311,7 @@ app.get('/api/morador/perfil', authenticate, (req, res) => {
     res.json(row);
   });
 });
+
 // 7.9.5. Listar Preços de um Prestador
 app.get('/api/prestadores/:id/precos', authenticate, (req, res) => {
   db.all(`SELECT * FROM precos WHERE prestador_id = ? ORDER BY data_referencia DESC`, [req.params.id], (err, rows) => {
@@ -316,6 +332,7 @@ app.post('/api/prestadores/:id/precos', authenticate, (req, res) => {
     res.json({ success: true, id: this.lastID });
   });
 });
+
 // 7.9.7. Comparar preços por categoria (para o gráfico)
 app.get('/api/categorias/:categoria_id/precos', authenticate, (req, res) => {
   db.all(`
@@ -329,6 +346,7 @@ app.get('/api/categorias/:categoria_id/precos', authenticate, (req, res) => {
     res.json(rows);
   });
 });
+
 // 7.10. Minhas Avaliações
 app.get('/api/morador/avaliacoes', authenticate, (req, res) => {
   db.all(`SELECT a.*, p.nome as prestador_nome, p.telefone as prestador_telefone FROM avaliacoes a JOIN prestadores p ON a.prestador_id = p.id WHERE a.morador_telefone = ? ORDER BY a.updated_at DESC`, 
@@ -337,15 +355,49 @@ app.get('/api/morador/avaliacoes', authenticate, (req, res) => {
     res.json(rows);
   });
 });
-// 7. Excluir Conta (LGPD)
+
+// 7.11. Excluir Conta (LGPD)
 app.delete('/api/morador/conta', authenticate, (req, res) => {
   db.run(`UPDATE moradores SET nome = 'Conta Excluída', unidade = '---', status = 'inativo', aceite_termos_data = NULL WHERE id = ?`, [req.user.id], (err) => {
     res.json({ success: true });
   });
 });
-   // Rota para servir o index.html
-   app.get('/', (req, res) => {
-       res.sendFile(path.join(__dirname, 'public', 'index.html'));
-   });
+
+// Rota para servir o index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// 6.7. Editar Prestador (só admin ou quem cadastrou) - APARECE APENAS 1 VEZ
+app.patch('/api/prestadores/:id', authenticate, (req, res) => {
+  const { nome, telefone, tipo, categoria_id, diferencial } = req.body;
+  const { id: morador_id, eh_admin, condominio_id } = req.user;
+  const prestador_id = req.params.id;
+
+  db.get(`SELECT * FROM prestadores WHERE id = ? AND condominio_id = ?`, 
+    [prestador_id, condominio_id], (err, prestador) => {
+    if (err || !prestador) return res.status(404).json({ error: 'Prestador não encontrado' });
+
+    if (!eh_admin && prestador.cadastrado_por_morador_id !== morador_id) {
+      return res.status(403).json({ error: 'Você não tem permissão para editar este prestador' });
+    }
+
+    const cleanPhone = telefone ? telefone.replace(/\D/g, '') : prestador.telefone;
+    
+    const sql = `UPDATE prestadores SET nome = ?, telefone = ?, tipo = ?, categoria_principal_id = ?, diferencial = ? WHERE id = ?`;
+    db.run(sql, [
+      nome || prestador.nome,
+      cleanPhone,
+      tipo || prestador.tipo,
+      categoria_id || prestador.categoria_principal_id,
+      diferencial !== undefined ? diferencial : prestador.diferencial,
+      prestador_id
+    ], function(err) {
+      if (err) return res.status(500).json({ error: 'Erro ao atualizar' });
+      res.json({ success: true });
+    });
+  });
+});
+
 const PORT = process.env.PORT || 3000;
-   app.listen(PORT, '0.0.0.0', () => console.log(`Servidor rodando na porta ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Servidor rodando na porta ${PORT}`));
