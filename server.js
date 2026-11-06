@@ -10,8 +10,11 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const db = new sqlite3.Database('./vizinha.db');
-const SECRET = 'sua_chave_secreta_muito_forte_aqui';
+const dbPath = process.env.RAILWAY_VOLUME_MOUNT_PATH 
+  ? `${process.env.RAILWAY_VOLUME_MOUNT_PATH}/vizinha.db` 
+  : './vizinha.db';
+const db = new sqlite3.Database(dbPath);
+console.log('💾 Banco de dados salvo em:', dbPath);const SECRET = 'sua_chave_secreta_muito_forte_aqui';
 
 if (process.argv.includes('--init-db')) {
   db.serialize(() => {
