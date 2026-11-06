@@ -440,26 +440,24 @@ async function abrirDetalhe(prestId) {
       </div>
     </div>
     
-    <div class="card-detalhe">
-      <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">💰 Tabela de Preços</h3>
-      ${htmlPrecos}
-      ${ehAdmin ? `
-        <div style="margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-          <h4 style="font-size: 14px; margin-bottom: 8px;">Adicionar Preço (Admin)</h4>
-          <select id="preco-tipo" class="input-field" onchange="toggleOutrosPreco()">
-            <option value="Diária">Diária</option>
-            <option value="Por Hora">Por Hora</option>
-            <option value="Mensal">Mensal</option>
-            <option value="Por Visita">Por Visita</option>
-            <option value="Por Serviço">Por Serviço</option>
-            <option value="Outros">Outros</option>
-          </select>
-          <input type="text" id="preco-tipo-outros" class="input-field hidden" placeholder="Digite o tipo personalizado">
-          <input type="number" id="preco-valor" class="input-field" placeholder="Valor (R$)" step="0.01">
-          <button onclick="salvarPrecoPrestador(${p.id})" class="btn-secondary">Adicionar Preço</button>
-        </div>
-      ` : ''}
-    </div>
+<div class="card-detalhe">
+  <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">💰 Tabela de Preços</h3>
+  ${htmlPrecos}
+  <div style="margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+    <h4 style="font-size: 14px; margin-bottom: 8px;">💰 Conhece os preços? Contribua!</h4>
+    <select id="preco-tipo" class="input-field" onchange="toggleOutrosPreco()">
+      <option value="Diária">Diária</option>
+      <option value="Por Hora">Por Hora</option>
+      <option value="Mensal">Mensal</option>
+      <option value="Por Visita">Por Visita</option>
+      <option value="Por Serviço">Por Serviço</option>
+      <option value="Outros">Outros</option>
+    </select>
+    <input type="text" id="preco-tipo-outros" class="input-field hidden" placeholder="Digite o tipo personalizado">
+    <input type="number" id="preco-valor" class="input-field" placeholder="Valor (R$)" step="0.01">
+    <button onclick="salvarPrecoPrestador(${p.id})" class="btn-secondary">Adicionar Preço</button>
+  </div>
+</div>
 
     <div class="card-detalhe">
       <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Avaliações (${total})</h3>
