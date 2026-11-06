@@ -9,9 +9,7 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', sans-serif; }
     body { background: #f7f9fc; color: #2d3748; min-height: 100vh; }
-    
     :root { --teal: #4FB8B8; --teal-dark: #3a9a9a; --coral: #FF8C7A; --coral-dark: #e67565; }
-    
     .app-header { background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%); color: white; padding: 16px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(79,184,184,0.3); }
     .header-container { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
     .header-left { display: flex; align-items: center; gap: 12px; flex: 1; }
@@ -22,83 +20,66 @@
     .header-actions { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
     .btn-admin { background: var(--coral); color: white; border: none; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 12px; cursor: pointer; }
     .btn-logout { background: rgba(255,255,255,0.2); color: white; border: none; padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
-    
     .container { max-width: 600px; margin: 0 auto; padding: 16px; padding-bottom: 80px; }
-    
     .search-box { background: white; border-radius: 24px; padding: 14px 20px; display: flex; align-items: center; gap: 10px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .search-box input { border: none; outline: none; flex: 1; font-size: 15px; background: transparent; }
-    
     .btn-cadastrar { background: var(--coral); color: white; border: none; padding: 14px; border-radius: 24px; font-weight: 700; font-size: 15px; cursor: pointer; width: 100%; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(255,140,122,0.3); }
-    
     .grupo-header { padding: 14px 18px; border-radius: 16px; color: white; font-weight: 700; font-size: 16px; margin: 14px 0 10px 0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
     .grupo-header .seta { transition: transform 0.3s; }
     .grupo-header.collapsed .seta { transform: rotate(-90deg); }
-    
     .grupo-obras { background: linear-gradient(135deg, #d97706, #f59e0b); }
     .grupo-saude { background: linear-gradient(135deg, #dc2626, #ef4444); }
     .grupo-casa { background: linear-gradient(135deg, var(--teal), #5ec4c4); }
     .grupo-beleza { background: linear-gradient(135deg, #db2777, #ec4899); }
     .grupo-tech { background: linear-gradient(135deg, #7c3aed, #8b5cf6); }
     .grupo-pets { background: linear-gradient(135deg, #059669, #10b981); }
-    .grupo-transporte { background: linear-gradient(135deg, #475569, #64748b); }
     .grupo-alimentacao { background: linear-gradient(135deg, #059669, #10b981); }
     .grupo-familia { background: linear-gradient(135deg, #475569, #64748b); }
     .grupo-outros { background: linear-gradient(135deg, #6b7280, #9ca3af); }
-    
     .grupo-content { overflow: hidden; transition: max-height 0.3s ease-out; max-height: 2000px; }
     .grupo-content.collapsed { max-height: 0 !important; }
-    
     .card-categoria { background: white; border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border-left: 5px solid var(--teal); }
     .card-categoria .icone { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; }
     .card-categoria .info { flex: 1; }
     .card-categoria .nome { font-weight: 700; font-size: 15px; }
     .card-categoria .contador { font-size: 13px; color: #718096; }
-    
     .card-prestador { background: white; border-radius: 16px; padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border-left: 5px solid var(--coral); }
     .card-prestador .info { flex: 1; }
     .card-prestador .nome { font-weight: 700; font-size: 15px; }
     .card-prestador .sub { font-size: 13px; color: #718096; }
-    
     .btn-voltar { background: white; border: 2px solid #e2e8f0; padding: 8px 14px; border-radius: 20px; font-size: 14px; cursor: pointer; margin-bottom: 12px; }
-    
     .card-detalhe { background: white; border-radius: 20px; padding: 18px; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    
     .btn-whats { background: #25d366; border: none; width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     .btn-ligar { background: var(--teal); border: none; width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     .btn-editar { background: #f59e0b; border: none; width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; flex-shrink: 0; }
     .btn-whats svg, .btn-ligar svg { width: 22px; height: 22px; fill: white; }
-    
     .btn-primary { background: var(--teal); color: white; border: none; padding: 14px; border-radius: 20px; font-weight: 700; font-size: 15px; cursor: pointer; width: 100%; margin-top: 12px; }
     .btn-secondary { background: var(--coral); color: white; border: none; padding: 12px; border-radius: 20px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%; margin-top: 8px; }
-    
     .avaliacao-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
     .avaliacao-card { background: white; border: 3px solid #e2e8f0; border-radius: 16px; padding: 20px 16px; text-align: center; cursor: pointer; transition: all 0.2s; }
     .avaliacao-card.selected-indica { border-color: var(--teal); background: #f0fdfa; }
     .avaliacao-card.selected-nao { border-color: var(--coral); background: #fff5f3; }
     .avaliacao-emoji { font-size: 48px; margin-bottom: 8px; }
     .avaliacao-label { font-weight: 800; font-size: 14px; }
-    
     .chips-container { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
     .chip { padding: 8px 14px; border-radius: 20px; border: 2px solid #e2e8f0; background: white; font-size: 13px; font-weight: 600; cursor: pointer; }
     .chip.selected { background: var(--teal); color: white; border-color: var(--teal); }
-    
     .input-field { width: 100%; padding: 12px 14px; border: 2px solid #e2e8f0; border-radius: 14px; font-size: 14px; margin-bottom: 10px; outline: none; }
     .input-field:focus { border-color: var(--teal); }
-    
     .hidden { display: none !important; }
-    
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
     .nav-item { display: flex; flex-direction: column; align-items: center; padding: 6px 16px; cursor: pointer; color: #718096; font-size: 11px; }
     .nav-item.active { color: var(--teal); font-weight: 800; }
     .nav-item .nav-icon { font-size: 24px; margin-bottom: 2px; }
-    
     .admin-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
     .admin-tab { background: white; border: 2px solid #e2e8f0; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 13px; cursor: pointer; }
     .admin-tab.active { background: var(--teal); color: white; border-color: var(--teal); }
-
-    .preco-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+    .preco-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
     .preco-item:last-child { border-bottom: none; }
-    .preco-valor { font-weight: 800; color: var(--teal-dark); }
+    .preco-valor { font-weight: 800; color: var(--teal-dark); font-size: 16px; }
+    .preco-acoes { display: flex; gap: 8px; }
+    .btn-acao { background: none; border: none; cursor: pointer; font-size: 18px; padding: 4px; }
+    .aviso-saude { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px; border-radius: 8px; margin: 12px 0; font-size: 13px; color: #92400e; }
   </style>
 </head>
 <body>
@@ -108,13 +89,11 @@
   <h1 style="font-size: 42px; font-weight: 800; color: var(--teal); margin-bottom: 8px;">Vizinha</h1>
   <p style="font-family: 'Caveat', cursive; font-size: 26px; color: var(--coral); margin-bottom: 8px;">tá aí as minhas indicações!</p>
   <p style="color: #718096; margin-bottom: 30px;">Condomínio Villagio Bourbon</p>
-  
   <div id="step-phone">
     <label style="display: block; text-align: left; font-weight: 700; margin-bottom: 6px;">Seu celular com DDD</label>
     <input type="tel" id="login-phone" class="input-field" placeholder="(44) 99999-9999" maxlength="15">
     <button onclick="requestSMS()" class="btn-primary">Enviar Código por SMS</button>
   </div>
-  
   <div id="step-code" class="hidden">
     <label style="display: block; text-align: left; font-weight: 700; margin-bottom: 6px;">Código de 6 dígitos</label>
     <input type="text" id="login-code" class="input-field" style="text-align: center; font-size: 24px; letter-spacing: 8px;" maxlength="6" placeholder="000000">
@@ -142,46 +121,33 @@
 
   <main class="container">
     <div id="tab-home">
-      <div class="search-box">
-        <span>🔍</span>
-        <input type="text" id="busca-prestador" oninput="filtrarCategorias()" placeholder="Buscar pelo nome ou serviço">
-      </div>
+      <div class="search-box"><span>🔍</span><input type="text" id="busca-prestador" oninput="filtrarCategorias()" placeholder="Buscar pelo nome ou serviço"></div>
       <button onclick="abrirModalCadastro()" class="btn-cadastrar">+ Cadastrar prestador</button>
       <div id="lista-categorias"></div>
     </div>
-
     <div id="tab-lista-prestadores" class="hidden">
       <button onclick="voltarParaCategorias()" class="btn-voltar">← Serviços</button>
       <h2 id="titulo-categoria-atual" style="font-size: 18px; font-weight: 800; color: var(--teal); margin: 12px 0;"></h2>
       <div id="lista-prestadores-categoria"></div>
     </div>
-
     <div id="tab-detalhe-prestador" class="hidden">
       <button onclick="voltarParaLista()" class="btn-voltar">← Voltar</button>
       <div id="conteudo-detalhe"></div>
     </div>
-
     <div id="tab-avaliacoes" class="hidden">
       <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px; color: var(--teal);">Minhas Avaliações</h2>
       <div id="lista-minhas-avaliacoes"></div>
     </div>
-
     <div id="tab-precos" class="hidden">
       <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px; color: var(--teal);">Comparativo de Preços</h2>
-      <select id="grafico-categoria-select" class="input-field" onchange="renderizarGraficoPrecos(this.value)">
-        <option value="">Selecione uma categoria para comparar...</option>
-      </select>
-      <div class="card-detalhe" style="padding: 10px;">
-        <canvas id="graficoPrecos"></canvas>
-      </div>
+      <select id="grafico-categoria-select" class="input-field" onchange="renderizarGraficoPrecos(this.value)"><option value="">Selecione uma categoria para comparar...</option></select>
+      <div class="card-detalhe" style="padding: 10px;"><canvas id="graficoPrecos"></canvas></div>
       <div id="lista-precos-categoria"></div>
     </div>
-
     <div id="tab-perfil" class="hidden">
       <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px; color: var(--teal);">Meu Perfil</h2>
       <div id="perfil-info" class="card-detalhe"></div>
     </div>
-
     <div id="tab-admin" class="hidden">
       <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 16px; color: var(--teal);">Painel do Administrador</h2>
       <div class="admin-tabs">
@@ -189,80 +155,80 @@
         <button onclick="showAdminTab('categorias')" class="admin-tab" id="admin-tab-categorias">Categorias</button>
         <button onclick="showAdminTab('mensagens')" class="admin-tab" id="admin-tab-mensagens">Mensagens</button>
       </div>
-      <div id="admin-moradores"></div>
-      <div id="admin-categorias" class="hidden"></div>
-      <div id="admin-mensagens" class="hidden"></div>
+      <div id="admin-moradores"></div><div id="admin-categorias" class="hidden"></div><div id="admin-mensagens" class="hidden"></div>
     </div>
   </main>
 
   <nav class="bottom-nav" id="bottom-nav">
-    <div class="nav-item active" id="nav-home" onclick="showTab('home')">
-      <span class="nav-icon">🏠</span><span>Início</span>
-    </div>
-    <div class="nav-item" id="nav-precos" onclick="showTab('precos')">
-      <span class="nav-icon">📊</span><span>Preços</span>
-    </div>
-    <div class="nav-item" id="nav-avaliacoes" onclick="showTab('avaliacoes')">
-      <span class="nav-icon">⭐</span><span>Avaliações</span>
-    </div>
-    <div class="nav-item" id="nav-perfil" onclick="showTab('perfil')">
-      <span class="nav-icon">👤</span><span>Perfil</span>
-    </div>
+    <div class="nav-item active" id="nav-home" onclick="showTab('home')"><span class="nav-icon">🏠</span><span>Início</span></div>
+    <div class="nav-item" id="nav-precos" onclick="showTab('precos')"><span class="nav-icon">📊</span><span>Preços</span></div>
+    <div class="nav-item" id="nav-avaliacoes" onclick="showTab('avaliacoes')"><span class="nav-icon">⭐</span><span>Avaliações</span></div>
+    <div class="nav-item" id="nav-perfil" onclick="showTab('perfil')"><span class="nav-icon">👤</span><span>Perfil</span></div>
   </nav>
 </div>
 
-<!-- MODAL CADASTRO COM WHATSAPP -->
+<!-- MODAL CADASTRO -->
 <div id="modal-cadastro" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: flex-end; justify-content: center;">
   <div style="background: white; width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 24px; max-height: 90vh; overflow-y: auto;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
       <h3 style="font-size: 20px; font-weight: 800;">Novo Prestador</h3>
       <button onclick="fecharModalCadastro()" style="background: none; border: none; font-size: 24px; cursor: pointer;">✕</button>
     </div>
-    
     <div style="background: #f0fdfa; padding: 16px; border-radius: 16px; margin-bottom: 16px; border: 2px dashed var(--teal);">
       <label style="display: block; font-weight: 700; margin-bottom: 6px; color: var(--teal-dark);">📋 Cole a mensagem do WhatsApp aqui:</label>
       <textarea id="whatsapp-paste" class="input-field" style="background: white; min-height: 60px;" placeholder="Ex: O João eletricista é ótimo, tel: (44) 99999-1234"></textarea>
       <button onclick="extrairDadosWhatsApp()" class="btn-secondary" style="margin-top: 8px;">✨ Extrair Dados Automaticamente</button>
     </div>
-    
-    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Nome *</label>
-    <input type="text" id="cad-nome" class="input-field" placeholder="Nome do prestador">
-    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Telefone *</label>
-    <input type="tel" id="cad-telefone" class="input-field" placeholder="(44) 99999-9999">
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Nome *</label><input type="text" id="cad-nome" class="input-field" placeholder="Nome do prestador">
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Telefone *</label><input type="tel" id="cad-telefone" class="input-field" placeholder="(44) 99999-9999">
     <label style="display: block; font-weight: 700; margin-bottom: 6px;">Tipo *</label>
     <select id="cad-tipo" class="input-field">
+      <option value="Morador">Morador</option>
       <option value="Autônomo">Autônomo</option>
       <option value="Empresa">Empresa</option>
     </select>
-    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Categoria *</label>
-    <select id="cad-categoria" class="input-field"><option value="">Selecione...</option></select>
-    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Diferencial</label>
-    <textarea id="cad-diferencial" class="input-field" placeholder="Ex: 10 anos de experiência"></textarea>
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Categoria *</label><select id="cad-categoria" class="input-field"><option value="">Selecione...</option></select>
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Diferencial</label><textarea id="cad-diferencial" class="input-field" placeholder="Ex: 10 anos de experiência"></textarea>
     <button onclick="salvarPrestador()" class="btn-primary">Salvar Prestador</button>
   </div>
 </div>
 
-<!-- MODAL EDIÇÃO -->
+<!-- MODAL EDIÇÃO PRESTADOR -->
 <div id="modal-edicao" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: flex-end; justify-content: center;">
   <div style="background: white; width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 24px; max-height: 90vh; overflow-y: auto;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
       <h3 style="font-size: 20px; font-weight: 800;">Editar Prestador</h3>
       <button onclick="fecharModalEdicao()" style="background: none; border: none; font-size: 24px; cursor: pointer;">✕</button>
     </div>
-    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Nome *</label>
-    <input type="text" id="edit-nome" class="input-field" placeholder="Nome do prestador">
-    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Telefone *</label>
-    <input type="tel" id="edit-telefone" class="input-field" placeholder="(44) 99999-9999">
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Nome *</label><input type="text" id="edit-nome" class="input-field">
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Telefone *</label><input type="tel" id="edit-telefone" class="input-field">
     <label style="display: block; font-weight: 700; margin-bottom: 6px;">Tipo *</label>
     <select id="edit-tipo" class="input-field">
+      <option value="Morador">Morador</option>
       <option value="Autônomo">Autônomo</option>
       <option value="Empresa">Empresa</option>
     </select>
-    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Categoria *</label>
-    <select id="edit-categoria" class="input-field"><option value="">Selecione...</option></select>
-    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Diferencial</label>
-    <textarea id="edit-diferencial" class="input-field" placeholder="Ex: 10 anos de experiência"></textarea>
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Categoria *</label><select id="edit-categoria" class="input-field"><option value="">Selecione...</option></select>
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Diferencial</label><textarea id="edit-diferencial" class="input-field"></textarea>
     <button onclick="salvarEdicaoPrestador()" class="btn-primary">Salvar Alterações</button>
+  </div>
+</div>
+
+<!-- MODAL EDIÇÃO PREÇO -->
+<div id="modal-edicao-preco" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: center; justify-content: center;">
+  <div style="background: white; width: 90%; max-width: 400px; border-radius: 24px; padding: 24px;">
+    <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 16px;">Editar Preço</h3>
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Tipo</label>
+    <select id="edit-preco-tipo" class="input-field">
+      <option value="Diária">Diária</option><option value="Por Hora">Por Hora</option><option value="Mensal">Mensal</option>
+      <option value="Por Visita">Por Visita</option><option value="Por Serviço">Por Serviço</option><option value="Outros">Outros</option>
+    </select>
+    <label style="display: block; font-weight: 700; margin-bottom: 6px;">Valor (R$)</label>
+    <input type="number" id="edit-preco-valor" class="input-field" step="0.01">
+    <div style="display: flex; gap: 10px; margin-top: 16px;">
+      <button onclick="fecharModalEdicaoPreco()" style="flex: 1; background: #e2e8f0; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer;">Cancelar</button>
+      <button onclick="confirmarEdicaoPreco()" style="flex: 1; background: var(--teal); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer;">Salvar</button>
+    </div>
   </div>
 </div>
 
@@ -271,51 +237,38 @@ let token = localStorage.getItem('vizinha_token');
 let user = null;
 const storedUser = localStorage.getItem('vizinha_user');
 if (storedUser) { try { user = JSON.parse(storedUser); } catch(e) {} }
-let categorias = [];
-let prestadores = [];
-let resumoAvaliacoes = {};
-let ehAdmin = false;
-let gruposAbertos = {};
-let categoriaAtualId = null;
-let categoriaAtualNome = null;
-let prestadorAtual = null;
-let tipoAvaliacao = null;
-let chartInstance = null;
-let prestadorEditandoId = null;
+let categorias = [], prestadores = [], resumoAvaliacoes = {}, ehAdmin = false, gruposAbertos = {};
+let categoriaAtualId = null, categoriaAtualNome = null, prestadorAtual = null, tipoAvaliacao = null, chartInstance = null;
+let prestadorEditandoId = null, precoEditandoId = null, prestadorPrecoAtualId = null;
 
-const iconesCategorias = {
-  'Diarista': '🧹', 'Mensalista': '👷', 'Babá': '👶', 'Cuidador de idoso': '👴',
-  'Lavanderia': '👕', 'Manicure': '💅', 'Terapia': '🧠', 'Médicos': '🩺',
-  'Organização': '📦', 'Pintor': '🎨', 'Eletricista': '💡', 'Encanador': '🔧',
-  'Azulejista': '🟦', 'Marceneiro': '🪚', 'Jardineiro': '🌿', 'Ar-condicionado': '❄️',
-  'Eletrodomésticos': '🔌', 'Dedetizador': '🪳', 'Gesseiro': '🏗️', 'Pedreiro': '🧱',
-  'Coleta de exames': '🩸', 'Enfermeiro': '💉', 'Fisioterapeuta': '🦴',
-  'Cabeleireiro': '💇', 'Maquiador': '💄', 'Massagista': '💆',
-  'Geladeira': '🧊', 'Internet': '🌐', 'Máquina de lavar': '🫧', 'TV a cabo': '📺',
-  'Água': '🚰', 'Delivery de comida': '🛵', 'Gás': '🔥', 'Minimercado': '🛒',
-  'Caixa de gordura': '🍳', 'Cozinheira': '🥘', 'Deep cleaning': '✨',
-  'Limpeza de caixa d\'água': '💧', 'Limpeza de vidros': '🪟', 'Passadeira': '👕',
-  'Lava car': '🚗', 'Piscineiro': '🏊', 'Outra': '➕'
+const iconesCategorias = { 
+  'Diarista': '🧹', 'Mensalista': '👷', 'Babá': '👶', 'Cuidador de idoso': '👴', 'Lavanderia': '👕', 'Manicure': '💅', 
+  'Terapia': '🧠', 'Médicos': '🩺', 'Organização': '📦', 'Pintor': '🎨', 'Eletricista': '💡', 'Encanador': '🔧', 
+  'Azulejista': '🟦', 'Marceneiro': '🪚', 'Jardineiro': '🌿', 'Ar-condicionado': '❄️', 'Eletrodomésticos': '🔌', 
+  'Dedetizador': '🪳', 'Gesseiro': '🏗️', 'Pedreiro': '🧱', 'Coleta de exames': '🩸', 'Enfermeiro': '💉', 
+  'Fisioterapeuta': '🦴', 'Cabeleireiro': '💇', 'Maquiador': '💄', 'Massagista': '💆', 'Geladeira': '🧊', 
+  'Internet': '🌐', 'Máquina de lavar': '🫧', 'TV a cabo': '📺', 'Água': '🚰', 'Delivery de comida': '🛵', 
+  'Gás': '🔥', 'Minimercado': '🛒', 'Caixa de gordura': '🍳', 'Cozinheira': '🥘', 'Deep cleaning': '✨', 
+  'Limpeza de caixa d\'água': '💧', 'Limpeza de vidros': '🪟', 'Passadeira': '👕', 'Lava car': '🚗', 
+  'Piscineiro': '🏊', 'Vidros PVC': '🪟', 'Porta e Janelas': '🚪', 'Corretor de Imóveis': '🏠', 
+  'Tela de Proteção': '🛡️', 'Cortinas': '🪟', 'Reforma de Cadeiras e Sofá': '🛋️', 'Doces e Bolos': '🎂', 
+  'Professor de Tênis': '🎾', 'Professor de Inglês': '🇬🇧', 'Espanhol': '🇪🇸', 'Cozinheiro/Chef/Churrasqueiro': '👨‍🍳', 
+  'Bicicleta': '🚲', 'Médico': '🩺', 'Dentista': '🦷', 'Psicólogo': '🧠', 'Calhas': '🏠', 
+  'Caixa de Gordura': '🍳', 'Solar Instalação': '☀️', 'Solar Manutenção': '🔧', 'Pet Shop': '🐾', 
+  'Cuidador de Pet': '🐕', 'Reformas em Geral': '🔨', 'Passadeira de Roupas': '👕', 'Fonoaudióloga': '🗣️',
+  'Restaurante': '🍽️', 'Pizzaria': '🍕', 'Lanchonete': '🍔', 'Marmitaria': '🍱', 'Açaí e Sorveteria': '🍦', 'Adega e Bebidas': '🍷',
+  'Pães': '🥖', 'Padaria': '🥐',
+  'Outra': '➕' 
 };
 
 function getIcone(cat) { return iconesCategorias[cat] || '🔧'; }
-function getCorGrupo(grupo) {
-  const cores = { 'Casa e Limpeza': '#4FB8B8', 'Obras e Reformas': '#d97706', 'Assistência Técnica e Instalações': '#7c3aed', 'Saúde e Home Care': '#dc2626', 'Beleza e Bem-Estar': '#db2777', 'Família e Área Externa': '#475569', 'Alimentação e Entregas': '#059669', 'Outros': '#6b7280' };
-  return cores[grupo] || '#6b7280';
-}
-function getClasseGrupo(grupo) {
-  const classes = { 'Casa e Limpeza': 'grupo-casa', 'Obras e Reformas': 'grupo-obras', 'Assistência Técnica e Instalações': 'grupo-tech', 'Saúde e Home Care': 'grupo-saude', 'Beleza e Bem-Estar': 'grupo-beleza', 'Família e Área Externa': 'grupo-familia', 'Alimentação e Entregas': 'grupo-alimentacao', 'Outros': 'grupo-outros' };
-  return classes[grupo] || 'grupo-outros';
-}
+function getCorGrupo(grupo) { const c = { 'Casa e Limpeza': '#4FB8B8', 'Obras e Reformas': '#d97706', 'Assistência Técnica e Instalações': '#7c3aed', 'Saúde e Home Care': '#dc2626', 'Beleza e Bem-Estar': '#db2777', 'Família e Área Externa': '#475569', 'Alimentação e Entregas': '#059669', 'Educação e Idiomas': '#8b5cf6', 'Pets e Animais': '#10b981', 'Outros': '#6b7280' }; return c[grupo] || '#6b7280'; }
+function getClasseGrupo(grupo) { const c = { 'Casa e Limpeza': 'grupo-casa', 'Obras e Reformas': 'grupo-obras', 'Assistência Técnica e Instalações': 'grupo-tech', 'Saúde e Home Care': 'grupo-saude', 'Beleza e Bem-Estar': 'grupo-beleza', 'Família e Área Externa': 'grupo-familia', 'Alimentação e Entregas': 'grupo-alimentacao', 'Educação e Idiomas': 'grupo-tech', 'Pets e Animais': 'grupo-pets', 'Outros': 'grupo-outros' }; return c[grupo] || 'grupo-outros'; }
 
 async function requestSMS() {
   const phone = document.getElementById('login-phone').value;
   const res = await fetch('/api/login/request', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({telefone: phone}) });
-  const data = await res.json();
-  if (res.ok) {
-    document.getElementById('step-phone').classList.add('hidden');
-    document.getElementById('step-code').classList.remove('hidden');
-  } else { alert(data.error); }
+  if (res.ok) { document.getElementById('step-phone').classList.add('hidden'); document.getElementById('step-code').classList.remove('hidden'); } else { alert((await res.json()).error); }
 }
 
 async function verifySMS() {
@@ -324,8 +277,7 @@ async function verifySMS() {
   const res = await fetch('/api/login/verify', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({telefone: phone, codigo: code}) });
   const data = await res.json();
   if (res.ok) {
-    token = data.token; 
-    ehAdmin = data.eh_admin;
+    token = data.token; ehAdmin = data.eh_admin;
     user = { id: data.id, telefone: data.telefone, eh_admin: data.eh_admin };
     localStorage.setItem('vizinha_token', token);
     localStorage.setItem('vizinha_admin', ehAdmin ? '1' : '0');
@@ -337,614 +289,244 @@ async function verifySMS() {
   } else { alert(data.error); }
 }
 
-function backToPhone() {
-  document.getElementById('step-code').classList.add('hidden');
-  document.getElementById('step-phone').classList.remove('hidden');
-}
+function backToPhone() { document.getElementById('step-code').classList.add('hidden'); document.getElementById('step-phone').classList.remove('hidden'); }
+function logout() { localStorage.clear(); location.reload(); }
 
-function logout() {
-  localStorage.removeItem('vizinha_token');
-  localStorage.removeItem('vizinha_admin');
-  localStorage.removeItem('vizinha_user');
-  location.reload();
-}
+async function initApp() { await carregarCategorias(); await carregarPrestadores(); await carregarResumoAvaliacoes(); renderizarCategorias(); preencherSelectGrafico(); }
+async function carregarCategorias() { const res = await fetch('/api/categorias', { headers: {'Authorization': `Bearer ${token}`} }); categorias = await res.json(); const s = document.getElementById('cad-categoria'); s.innerHTML = '<option value="">Selecione...</option>'; categorias.forEach(c => s.innerHTML += `<option value="${c.id}">${c.nome} (${c.grupo})</option>`); }
+async function carregarPrestadores() { const res = await fetch('/api/prestadores', { headers: {'Authorization': `Bearer ${token}`} }); prestadores = await res.json(); }
+async function carregarResumoAvaliacoes() { try { const res = await fetch('/api/prestadores/avaliacoes-resumo', { headers: {'Authorization': `Bearer ${token}`} }); const d = await res.json(); resumoAvaliacoes = {}; d.forEach(r => resumoAvaliacoes[r.prestador_id] = { indica: parseInt(r.indica)||0, nao_indica: parseInt(r.nao_indica)||0 }); } catch(e){} }
 
-async function initApp() {
-  await carregarCategorias();
-  await carregarPrestadores();
-  await carregarResumoAvaliacoes();
-  renderizarCategorias();
-  preencherSelectGrafico();
-}
-
-async function carregarCategorias() {
-  const res = await fetch('/api/categorias', { headers: {'Authorization': `Bearer ${token}`} });
-  categorias = await res.json();
-  const select = document.getElementById('cad-categoria');
-  select.innerHTML = '<option value="">Selecione...</option>';
-  categorias.forEach(c => { select.innerHTML += `<option value="${c.id}">${c.nome} (${c.grupo})</option>`; });
-}
-
-async function carregarPrestadores() {
-  const res = await fetch('/api/prestadores', { headers: {'Authorization': `Bearer ${token}`} });
-  prestadores = await res.json();
-}
-
-async function carregarResumoAvaliacoes() {
-  try {
-    const res = await fetch('/api/prestadores/avaliacoes-resumo', { headers: {'Authorization': `Bearer ${token}`} });
-    const data = await res.json();
-    resumoAvaliacoes = {};
-    data.forEach(r => { resumoAvaliacoes[r.prestador_id] = { indica: parseInt(r.indica) || 0, nao_indica: parseInt(r.nao_indica) || 0 }; });
-  } catch(e) { resumoAvaliacoes = {}; }
-}
-
-function toggleGrupo(grupo) {
-  gruposAbertos[grupo] = !gruposAbertos[grupo];
-  renderizarCategorias();
-}
-
+function toggleGrupo(g) { gruposAbertos[g] = !gruposAbertos[g]; renderizarCategorias(); }
 function renderizarCategorias() {
   const busca = document.getElementById('busca-prestador').value.toLowerCase().trim();
-  const container = document.getElementById('lista-categorias');
-  container.innerHTML = '';
-  const grupos = {};
-  categorias.forEach(c => { if (!grupos[c.grupo]) grupos[c.grupo] = []; grupos[c.grupo].push(c); });
-  const ordemGrupos = ['Obras e Reformas','Saúde e Home Care','Beleza e Bem-Estar','Assistência Técnica e Instalações','Alimentação e Entregas','Casa e Limpeza','Família e Área Externa','Outros'];
-  
-  ordemGrupos.forEach(grupo => {
-    if (!grupos[grupo]) return;
-    const cats = grupos[grupo].filter(c => {
-      if (!busca) return true;
-      const matchCategoria = c.nome.toLowerCase().includes(busca);
-      const prestadoresMatch = prestadores.filter(p => p.categoria_principal_id === c.id && p.nome.toLowerCase().includes(busca));
-      return matchCategoria || prestadoresMatch.length > 0;
-    });
-    if (cats.length === 0) return;
-    const estaAberto = gruposAbertos[grupo] === true || busca.length > 0;
-    
-    const grupoDiv = document.createElement('div');
-    grupoDiv.innerHTML = `
-      <div class="grupo-header ${getClasseGrupo(grupo)} ${!estaAberto ? 'collapsed' : ''}" onclick="toggleGrupo('${grupo}')">
-        <span>${grupo}</span><span class="seta">▼</span>
-      </div>
-      <div class="grupo-content ${!estaAberto ? 'collapsed' : ''}">
-        ${cats.map(c => {
-          const count = prestadores.filter(p => p.categoria_principal_id === c.id).length;
-          return `<div class="card-categoria" style="border-left-color:${getCorGrupo(grupo)};" onclick="abrirCategoria(${c.id}, '${c.nome.replace(/'/g,"\\'")}')">
-            <div class="icone" style="background:${getCorGrupo(grupo)}20; color:${getCorGrupo(grupo)};">${getIcone(c.nome)}</div>
-            <div class="info"><div class="nome">${c.nome}</div><div class="contador">${count} prestador(es)</div></div>
-            <span style="color: #cbd5e0; font-size: 20px;">›</span>
-          </div>`;
-        }).join('')}
-      </div>`;
-    container.appendChild(grupoDiv);
+  const container = document.getElementById('lista-categorias'); container.innerHTML = '';
+  const grupos = {}; categorias.forEach(c => { if(!grupos[c.grupo]) grupos[c.grupo]=[]; grupos[c.grupo].push(c); });
+  ['Obras e Reformas','Saúde e Home Care','Beleza e Bem-Estar','Assistência Técnica e Instalações','Alimentação e Entregas','Casa e Limpeza','Família e Área Externa','Educação e Idiomas','Pets e Animais','Outros'].forEach(grupo => {
+    if(!grupos[grupo]) return;
+    const cats = grupos[grupo].filter(c => !busca || c.nome.toLowerCase().includes(busca) || prestadores.some(p => p.categoria_principal_id===c.id && p.nome.toLowerCase().includes(busca)));
+    if(cats.length===0) return;
+    const aberto = gruposAbertos[grupo] || busca.length > 0;
+    const div = document.createElement('div');
+    div.innerHTML = `<div class="grupo-header ${getClasseGrupo(grupo)} ${!aberto?'collapsed':''}" onclick="toggleGrupo('${grupo}')"><span>${grupo}</span><span class="seta">▼</span></div><div class="grupo-content ${!aberto?'collapsed':''}">${cats.map(c => `<div class="card-categoria" style="border-left-color:${getCorGrupo(grupo)};" onclick="abrirCategoria(${c.id},'${c.nome.replace(/'/g,"\\'")}')"><div class="icone" style="background:${getCorGrupo(grupo)}20;color:${getCorGrupo(grupo)};">${getIcone(c.nome)}</div><div class="info"><div class="nome">${c.nome}</div><div class="contador">${prestadores.filter(p=>p.categoria_principal_id===c.id).length} prestador(es)</div></div><span style="color:#cbd5e0;font-size:20px;">›</span></div>`).join('')}</div>`;
+    container.appendChild(div);
   });
 }
-
 function filtrarCategorias() { renderizarCategorias(); }
 
-function abrirCategoria(catId, catNome) {
-  categoriaAtualId = catId; categoriaAtualNome = catNome;
-  document.getElementById('titulo-categoria-atual').textContent = catNome;
+function abrirCategoria(id, nome) {
+  categoriaAtualId = id; categoriaAtualNome = nome;
+  document.getElementById('titulo-categoria-atual').textContent = nome;
   const lista = document.getElementById('lista-prestadores-categoria');
-  const catsPrest = prestadores.filter(p => p.categoria_principal_id === catId);
-  
-  if (catsPrest.length === 0) {
-    lista.innerHTML = '<div class="card-detalhe" style="text-align: center; color: #718096; padding: 30px;">Nenhum prestador nesta categoria ainda.</div>';
-  } else {
-    lista.innerHTML = catsPrest.map(p => {
-      const resumo = resumoAvaliacoes[p.id] || {indica:0, nao_indica:0};
-      const total = resumo.indica + resumo.nao_indica;
-      const statusAval = total === 0 ? 'sem avaliação' : `${resumo.indica} indica / ${resumo.nao_indica} não`;
-      return `<div class="card-prestador" onclick="abrirDetalhe(${p.id})">
-        <div class="info"><div class="nome">${p.nome}</div><div class="sub">${p.tipo} · ${p.categoria_nome}</div></div>
-        <div style="text-align: right;"><div style="font-size: 12px; color: #718096;">${statusAval}</div><div style="font-size: 12px; color: #718096;">${total} aval.</div></div>
-      </div>`;
-    }).join('');
-  }
+  const p = prestadores.filter(x => x.categoria_principal_id === id);
+  lista.innerHTML = p.length === 0 ? '<div class="card-detalhe" style="text-align:center;color:#718096;padding:30px;">Nenhum prestador.</div>' : p.map(pr => {
+    const r = resumoAvaliacoes[pr.id]||{indica:0,nao_indica:0}; const t = r.indica+r.nao_indica;
+    return `<div class="card-prestador" onclick="abrirDetalhe(${pr.id})"><div class="info"><div class="nome">${pr.nome}</div><div class="sub">${pr.tipo} · ${pr.categoria_nome}</div></div><div style="text-align:right;"><div style="font-size:12px;color:#718096;">${t===0?'sem avaliação':r.indica+' indica'}</div></div></div>`;
+  }).join('');
   showTab('lista-prestadores');
 }
-
 function voltarParaCategorias() { showTab('home'); }
 
-async function abrirDetalhe(prestId) {
-  const p = prestadores.find(x => x.id === prestId);
-  if (!p) return;
-  prestadorAtual = p;
-  const resumo = resumoAvaliacoes[p.id] || {indica:0, nao_indica:0};
-  const total = resumo.indica + resumo.nao_indica;
+async function abrirDetalhe(id) {
+  const p = prestadores.find(x => x.id === id); if(!p) return; prestadorAtual = p;
+  const r = resumoAvaliacoes[p.id]||{indica:0,nao_indica:0}; const t = r.indica+r.nao_indica;
+  const resP = await fetch(`/api/prestadores/${p.id}/precos`, { headers: {'Authorization': `Bearer ${token}`} });
+  const precos = await resP.json();
   
-  const resPrecos = await fetch(`/api/prestadores/${p.id}/precos`, { headers: {'Authorization': `Bearer ${token}`} });
-  const precos = await resPrecos.json();
-  
-  let htmlPrecos = precos.length === 0 ? '<p style="color:#718096; font-size:14px;">Nenhum preço cadastrado.</p>' : 
-    precos.map(pr => `<div class="preco-item"><span>${pr.tipo_preco}</span><span class="preco-valor">R$ ${parseFloat(pr.valor).toFixed(2)}</span></div>`).join('');
+  // ✅ CORREÇÃO: Verifica admin de forma robusta
+  const ehAdminReal = ehAdmin === true || (user && user.eh_admin === true);
+  const podeEditarPrestador = ehAdminReal || (user && p.cadastrado_por_morador_id === user.id);
 
-  const podeEditar = ehAdmin || (user && p.cadastrado_por_morador_id === user.id);
+  // ✅ NOVO: Detecta se é categoria de SAÚDE
+  const categoriaObj = categorias.find(c => c.id === p.categoria_principal_id);
+  const ehSaude = categoriaObj && categoriaObj.grupo === 'Saúde e Home Care';
+
+  let htmlPrecos = precos.length === 0 ? '<p style="color:#718096;font-size:14px;">Nenhum preço cadastrado.</p>' : precos.map(pr => {
+    const podeEditarPreco = ehAdminReal || (user && pr.telefone === user.telefone);
+    return `<div class="preco-item">
+      <div style="flex:1;"><div style="font-weight:700;">${pr.tipo_preco}</div><div style="font-size:11px;color:#718096;">Ref: ${new Date(pr.data_referencia).toLocaleDateString('pt-BR')}</div></div>
+      <div class="preco-valor">R$ ${parseFloat(pr.valor).toFixed(2)}</div>
+      ${podeEditarPreco ? `<div class="preco-acoes"><button class="btn-acao" onclick="abrirModalEdicaoPreco(${pr.id}, '${pr.tipo_preco}', ${pr.valor})">✏️</button><button class="btn-acao" onclick="deletarPreco(${pr.id})">🗑️</button></div>` : ''}
+    </div>`;
+  }).join('');
+
+  // ✅ NOVO: HTML de avaliação adaptado para SAÚDE
+  let htmlAvaliacao = `
+    <div class="card-detalhe">
+      <h3 style="font-size:16px;font-weight:800;margin-bottom:12px;">Avaliações (${t})</h3>
+      <p style="color:#718096;margin-bottom:16px;">${r.indica} indicam · ${r.nao_indica} não indicam</p>
+      <div class="avaliacao-cards">
+        <div class="avaliacao-card" id="btn-indica" onclick="selecionarAvaliacao('indica')"><div class="avaliacao-emoji">😊</div><div class="avaliacao-label">INDICA</div></div>
+        <div class="avaliacao-card" id="btn-nao-indica" onclick="selecionarAvaliacao('nao_indica')"><div class="avaliacao-emoji">😠</div><div class="avaliacao-label">NÃO INDICA</div></div>
+      </div>
+  `;
+  
+  if (ehSaude) {
+    // SAÚDE: apenas voto, sem comentários
+    htmlAvaliacao += `
+      <div class="aviso-saude">
+        ⚕️ <strong>Profissional de Saúde:</strong> Por ética e privacidade, não permitimos comentários ou detalhes sobre atendimentos médicos. Seu voto anônimo é suficiente!
+      </div>
+    `;
+  } else {
+    // OUTROS: com motivos e comentário
+    htmlAvaliacao += `
+      <div id="secao-motivos" class="hidden"><label style="display:block;font-weight:700;margin-bottom:6px;color:var(--teal-dark);">Por que você indica?</label><div class="chips-container"><button onclick="toggleChip(this)" class="chip">⏱️ Pontual</button><button onclick="toggleChip(this)" class="chip">💰 Preço justo</button><button onclick="toggleChip(this)" class="chip">🤝 Bom atendimento</button><button onclick="toggleChip(this)" class="chip">👔 Profissional</button></div></div>
+      <div id="secao-comentario" class="hidden"><label style="display:block;font-weight:700;margin-bottom:6px;">Comentário</label><textarea id="comentario" class="input-field"></textarea></div>
+    `;
+  }
+  
+  htmlAvaliacao += `
+      <button onclick="enviarAvaliacao(${ehSaude})" class="btn-primary">Enviar Avaliação</button>
+    </div>
+  `;
 
   document.getElementById('conteudo-detalhe').innerHTML = `
     <div class="card-detalhe">
-      <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 8px;">${p.nome}</h2>
-      <p style="color: #718096; font-size: 14px;">${p.tipo} · ${p.categoria_nome}</p>
-      ${p.diferencial ? `<p style="font-style: italic; color: #718096; margin-top: 10px;">"${p.diferencial}"</p>` : ''}
-      <div style="display: flex; align-items: center; gap: 10px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-        ${podeEditar ? `<button onclick="abrirModalEdicao(${p.id})" class="btn-editar" title="Editar">✏️</button>` : ''}
-        <span style="font-size: 15px; font-weight: 700; flex: 1;">${formatarTelefone(p.telefone)}</span>
+      <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;">${p.nome}</h2>
+      <p style="color:#718096;font-size:14px;">${p.tipo} · ${p.categoria_nome}</p>
+      ${p.diferencial ? `<p style="font-style:italic;color:#718096;margin-top:10px;">"${p.diferencial}"</p>` : ''}
+      <div style="display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:16px;border-top:1px solid #e2e8f0;">
+        ${podeEditarPrestador ? `<button onclick="abrirModalEdicao(${p.id})" class="btn-editar" title="Editar">✏️</button>` : ''}
+        <span style="font-size:15px;font-weight:700;flex:1;">${formatarTelefone(p.telefone)}</span>
         <a href="https://wa.me/${p.telefone.replace(/\D/g,'')}" target="_blank" class="btn-whats"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg></a>
         <a href="tel:${p.telefone.replace(/\D/g,'')}" class="btn-ligar"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
       </div>
     </div>
-    
     <div class="card-detalhe">
-      <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">💰 Tabela de Preços</h3>
+      <h3 style="font-size:16px;font-weight:800;margin-bottom:12px;">💰 Tabela de Preços</h3>
       ${htmlPrecos}
-      <div style="margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-        <h4 style="font-size: 14px; margin-bottom: 8px;">💰 Conhece os preços? Contribua!</h4>
-        <select id="preco-tipo" class="input-field" onchange="toggleOutrosPreco()">
-          <option value="Diária">Diária</option>
-          <option value="Por Hora">Por Hora</option>
-          <option value="Mensal">Mensal</option>
-          <option value="Por Visita">Por Visita</option>
-          <option value="Por Serviço">Por Serviço</option>
-          <option value="Outros">Outros</option>
-        </select>
+      <div style="margin-top:15px;border-top:1px solid #e2e8f0;padding-top:15px;">
+        <h4 style="font-size:14px;margin-bottom:8px;">💰 Conhece os preços? Contribua!</h4>
+        <select id="preco-tipo" class="input-field" onchange="toggleOutrosPreco()"><option value="Diária">Diária</option><option value="Por Hora">Por Hora</option><option value="Mensal">Mensal</option><option value="Por Visita">Por Visita</option><option value="Por Serviço">Por Serviço</option><option value="Outros">Outros</option></select>
         <input type="text" id="preco-tipo-outros" class="input-field hidden" placeholder="Digite o tipo personalizado">
         <input type="number" id="preco-valor" class="input-field" placeholder="Valor (R$)" step="0.01">
         <button onclick="salvarPrecoPrestador(${p.id})" class="btn-secondary">Adicionar Preço</button>
       </div>
     </div>
-
-    <div class="card-detalhe">
-      <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Avaliações (${total})</h3>
-      <p style="color: #718096; margin-bottom: 16px;">${resumo.indica} indicam · ${resumo.nao_indica} não indicam</p>
-      <div class="avaliacao-cards">
-        <div class="avaliacao-card" id="btn-indica" onclick="selecionarAvaliacao('indica')"><div class="avaliacao-emoji">😊</div><div class="avaliacao-label">INDICA</div></div>
-        <div class="avaliacao-card" id="btn-nao-indica" onclick="selecionarAvaliacao('nao_indica')"><div class="avaliacao-emoji">😠</div><div class="avaliacao-label">NÃO INDICA</div></div>
-      </div>
-      <div id="secao-motivos" class="hidden">
-        <label style="display: block; font-weight: 700; margin-bottom: 6px; color: var(--teal-dark);">Por que você indica? (opcional)</label>
-        <div class="chips-container">
-          <button onclick="toggleChip(this)" class="chip">⏱️ Pontual</button><button onclick="toggleChip(this)" class="chip">💰 Preço justo</button>
-          <button onclick="toggleChip(this)" class="chip">🤝 Bom atendimento</button><button onclick="toggleChip(this)" class="chip">👔 Profissional</button>
-          <button onclick="toggleChip(this)" class="chip">🧹 Limpo e organizado</button><button onclick="toggleChip(this)" class="chip">⭐ Trabalho de qualidade</button>
-        </div>
-      </div>
-      <div id="secao-comentario" class="hidden">
-        <label style="display: block; font-weight: 700; margin-bottom: 6px;">Comentário (opcional)</label>
-        <textarea id="comentario" class="input-field" placeholder="Conte sua experiência..."></textarea>
-      </div>
-      <button onclick="enviarAvaliacao()" class="btn-primary">Enviar Avaliação</button>
-    </div>
+    ${htmlAvaliacao}
   `;
   showTab('detalhe-prestador');
 }
 
-function selecionarAvaliacao(tipo) {
-  tipoAvaliacao = tipo;
-  document.getElementById('btn-indica').classList.toggle('selected-indica', tipo === 'indica');
-  document.getElementById('btn-nao-indica').classList.toggle('selected-nao', tipo === 'nao_indica');
-  document.getElementById('secao-motivos').classList.toggle('hidden', tipo !== 'indica');
-  document.getElementById('secao-comentario').classList.toggle('hidden', tipo !== 'indica');
-}
+function selecionarAvaliacao(t) { tipoAvaliacao=t; document.getElementById('btn-indica').classList.toggle('selected-indica',t==='indica'); document.getElementById('btn-nao-indica').classList.toggle('selected-nao',t==='nao_indica'); const sm=document.getElementById('secao-motivos'); const sc=document.getElementById('secao-comentario'); if(sm)sm.classList.toggle('hidden',t!=='indica'); if(sc)sc.classList.toggle('hidden',t!=='indica'); }
 function toggleChip(el) { el.classList.toggle('selected'); }
 
-async function enviarAvaliacao() {
-  if (!tipoAvaliacao) { alert('Selecione INDICA ou NÃO INDICA'); return; }
-  const motivos = [];
-  document.querySelectorAll('#secao-motivos .chip.selected').forEach(c => motivos.push(c.textContent));
-  const comentario = document.getElementById('comentario')?.value || '';
-  const res = await fetch('/api/avaliacoes', {
-    method: 'POST', headers: {'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json'},
-    body: JSON.stringify({ prestador_id: prestadorAtual.id, tipo: tipoAvaliacao, motivos: motivos, comentario: comentario })
-  });
-  if (res.ok) {
-    alert('Avaliação enviada com sucesso!');
-    await carregarResumoAvaliacoes();
-    abrirDetalhe(prestadorAtual.id);
-  } else { alert('Erro: ' + (await res.json()).error); }
+// ✅ CORREÇÃO: recebe flag isSaude
+async function enviarAvaliacao(isSaude = false) {
+  if(!tipoAvaliacao) return alert('Selecione INDICA ou NÃO INDICA');
+  const motivos = []; 
+  const chips = document.querySelectorAll('#secao-motivos .chip.selected');
+  chips.forEach(c=>motivos.push(c.textContent));
+  const comentarioEl = document.getElementById('comentario');
+  const comentario = comentarioEl ? comentarioEl.value : '';
+  
+  const res = await fetch('/api/avaliacoes', { method:'POST', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'}, body:JSON.stringify({prestador_id:prestadorAtual.id,tipo:tipoAvaliacao,motivos,comentario,is_saude:isSaude}) });
+  if(res.ok) { alert('Avaliação enviada!'); await carregarResumoAvaliacoes(); abrirDetalhe(prestadorAtual.id); } else alert((await res.json()).error);
 }
 
-function voltarParaLista() {
-  if (categoriaAtualId) abrirCategoria(categoriaAtualId, categoriaAtualNome);
-  else showTab('home');
-}
+function voltarParaLista() { if(categoriaAtualId) abrirCategoria(categoriaAtualId,categoriaAtualNome); else showTab('home'); }
 
 function showTab(tab) {
-  ['home','lista-prestadores','detalhe-prestador','avaliacoes','precos','perfil','admin'].forEach(t => {
-    const el = document.getElementById('tab-'+t); if (el) el.classList.add('hidden');
-  });
+  ['home','lista-prestadores','detalhe-prestador','avaliacoes','precos','perfil','admin'].forEach(t=>{const e=document.getElementById('tab-'+t);if(e)e.classList.add('hidden');});
   document.getElementById('tab-'+tab).classList.remove('hidden');
-  ['home','precos','avaliacoes','perfil'].forEach(t => {
-    const nav = document.getElementById('nav-'+t); if (nav) nav.classList.remove('active');
-  });
-  const activeNav = document.getElementById('nav-'+tab);
-  if (activeNav) activeNav.classList.add('active');
-  document.getElementById('bottom-nav').classList.toggle('hidden', tab === 'admin' || tab === 'lista-prestadores' || tab === 'detalhe-prestador');
-  
-  if (tab === 'avaliacoes') carregarMinhasAvaliacoes();
-  if (tab === 'perfil') carregarPerfil();
-  if (tab === 'admin') { carregarMoradores(); carregarCategoriasAdmin(); carregarMensagens(); }
-  if (tab === 'precos') preencherSelectGrafico();
+  ['home','precos','avaliacoes','perfil'].forEach(t=>{const n=document.getElementById('nav-'+t);if(n)n.classList.remove('active');});
+  const a=document.getElementById('nav-'+tab); if(a)a.classList.add('active');
+  document.getElementById('bottom-nav').classList.toggle('hidden', tab==='admin'||tab==='lista-prestadores'||tab==='detalhe-prestador');
+  if(tab==='avaliacoes') carregarMinhasAvaliacoes();
+  if(tab==='perfil') carregarPerfil();
+  if(tab==='admin') { carregarMoradores(); carregarCategoriasAdmin(); carregarMensagens(); }
+  if(tab==='precos') preencherSelectGrafico();
 }
+function showAdminTab(tab) { ['moradores','categorias','mensagens'].forEach(t=>{document.getElementById('admin-'+t).classList.add('hidden');document.getElementById('admin-tab-'+t).classList.remove('active');}); document.getElementById('admin-'+tab).classList.remove('hidden'); document.getElementById('admin-tab-'+tab).classList.add('active'); }
 
-function showAdminTab(tab) {
-  ['moradores','categorias','mensagens'].forEach(t => {
-    document.getElementById('admin-'+t).classList.add('hidden');
-    document.getElementById('admin-tab-'+t).classList.remove('active');
-  });
-  document.getElementById('admin-'+tab).classList.remove('hidden');
-  document.getElementById('admin-tab-'+tab).classList.add('active');
-}
-
-async function carregarMoradores() {
-  const res = await fetch('/api/admin/moradores', { headers: {'Authorization': `Bearer ${token}`} });
-  const moradores = await res.json();
-  document.getElementById('admin-moradores').innerHTML = moradores.map(m => `
-    <div class="card-detalhe">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-        <div><div style="font-weight: 700;">${m.nome || 'Sem nome'}</div><div style="font-size: 13px; color: #718096;">Unidade: ${m.unidade || '---'} | Tel: ${m.telefone}</div></div>
-        <span style="background: ${m.status === 'ativo' ? '#10b981' : '#f59e0b'}20; color: ${m.status === 'ativo' ? '#10b981' : '#f59e0b'}; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700;">${m.status.toUpperCase()}</span>
-      </div>
-      <div style="display: flex; gap: 8px;">
-        <button onclick="mudarStatusMorador(${m.id},'ativo')" style="flex: 1; background: #10b981; color: white; border: none; padding: 10px; border-radius: 16px; font-weight: 700; cursor: pointer;">Aprovar</button>
-        <button onclick="mudarStatusMorador(${m.id},'inativo')" style="flex: 1; background: var(--coral); color: white; border: none; padding: 10px; border-radius: 16px; font-weight: 700; cursor: pointer;">Inativar</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-async function mudarStatusMorador(id, status) {
-  const res = await fetch(`/api/admin/moradores/${id}/status`, {
-    method: 'PATCH', headers: {'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json'}, body: JSON.stringify({status})
-  });
-  if (res.ok) { alert('Status atualizado!'); carregarMoradores(); }
-}
-
-async function carregarCategoriasAdmin() {
-  const res = await fetch('/api/admin/categorias', { headers: {'Authorization': `Bearer ${token}`} });
-  const cats = await res.json();
-  
-  let html = `
-    <div class="card-detalhe">
-      <h4 style="margin-bottom: 10px; color: var(--teal-dark);">+ Adicionar Nova Categoria</h4>
-      <input type="text" id="nova-cat-nome" class="input-field" placeholder="Nome da categoria (ex: Eletricista)">
-      <select id="nova-cat-grupo" class="input-field">
-        <option value="Casa e Limpeza">Casa e Limpeza</option>
-        <option value="Obras e Reformas">Obras e Reformas</option>
-        <option value="Assistência Técnica e Instalações">Assistência Técnica e Instalações</option>
-        <option value="Saúde e Home Care">Saúde e Home Care</option>
-        <option value="Beleza e Bem-Estar">Beleza e Bem-Estar</option>
-        <option value="Família e Área Externa">Família e Área Externa</option>
-        <option value="Alimentação e Entregas">Alimentação e Entregas</option>
-        <option value="Outros">Outros</option>
-      </select>
-      <button onclick="salvarNovaCategoria()" class="btn-primary">Salvar Categoria</button>
-    </div>
-  ` + cats.map(c => `
-    <div class="card-detalhe" style="display: flex; align-items: center; gap: 12px;">
-      <div style="width: 16px; height: 16px; border-radius: 50%; background: ${c.cor};"></div>
-      <div style="flex: 1;"><div style="font-weight: 700;">${c.nome}</div><div style="font-size: 12px; color: #718096;">${c.grupo}</div></div>
-    </div>
-  `).join('');
-  document.getElementById('admin-categorias').innerHTML = html;
-}
-
-async function salvarNovaCategoria() {
-  const nome = document.getElementById('nova-cat-nome').value.trim();
-  const grupo = document.getElementById('nova-cat-grupo').value;
-  if (!nome) { alert('Digite o nome da categoria'); return; }
-  
-  const res = await fetch('/api/admin/categorias', {
-    method: 'POST', headers: {'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json'},
-    body: JSON.stringify({ nome, grupo })
-  });
-  if (res.ok) {
-    alert('Categoria criada com sucesso!');
-    await carregarCategorias();
-    carregarCategoriasAdmin();
-    document.getElementById('nova-cat-nome').value = '';
-  } else {
-    alert('Erro ao criar: ' + (await res.json()).error);
-  }
-}
-
-async function carregarMensagens() {
-  const res = await fetch('/api/admin/mensagens', { headers: {'Authorization': `Bearer ${token}`} });
-  const msgs = await res.json();
-  document.getElementById('admin-mensagens').innerHTML = msgs.length === 0 ? '<p style="text-align: center; color: #718096; padding: 20px;">Nenhuma mensagem.</p>' : msgs.map(m => `
-    <div class="card-detalhe">
-      <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-        <span style="background: #f0fdfa; padding: 3px 10px; border-radius: 12px; font-size: 11px; color: var(--teal-dark); font-weight: 700;">${m.tipo}</span>
-        <span style="font-size: 11px; color: #718096;">${new Date(m.created_at).toLocaleDateString('pt-BR')}</span>
-      </div>
-      <p style="font-size: 14px; margin-bottom: 8px;">${m.mensagem}</p>
-      <p style="font-size: 12px; color: #718096;">De: ${m.morador_nome || 'Desconhecido'} (Unidade ${m.unidade || '---'})</p>
-    </div>
-  `).join('');
-}
-
-async function carregarMinhasAvaliacoes() {
-  const res = await fetch('/api/morador/avaliacoes', { headers: {'Authorization': `Bearer ${token}`} });
-  const avs = await res.json();
-  document.getElementById('lista-minhas-avaliacoes').innerHTML = avs.length === 0 ? '<div class="card-detalhe" style="text-align: center; color: #718096; padding: 30px;">Você ainda não avaliou nenhum prestador.</div>' : avs.map(a => `
-    <div class="card-detalhe">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-        <div style="font-weight: 700;">${a.prestador_nome}</div>
-        <span style="background: ${a.tipo === 'indica' ? '#f0fdfa' : '#fff5f3'}; color: ${a.tipo === 'indica' ? 'var(--teal-dark)' : 'var(--coral-dark)'}; padding: 4px 12px; border-radius: 14px; font-size: 12px; font-weight: 700;">${a.tipo === 'indica' ? '😊 INDICA' : '😠 NÃO INDICA'}</span>
-      </div>
-      ${a.comentario ? `<p style="font-size: 13px; color: #718096; font-style: italic;">"${a.comentario}"</p>` : ''}
-    </div>
-  `).join('');
-}
-
-async function carregarPerfil() {
-  const res = await fetch('/api/morador/perfil', { headers: {'Authorization': `Bearer ${token}`} });
-  const p = await res.json();
-  document.getElementById('perfil-info').innerHTML = `
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-      <div style="display: flex; justify-content: space-between;"><span style="color: #718096;">Nome:</span><span style="font-weight: 700;">${p.nome || '---'}</span></div>
-      <div style="display: flex; justify-content: space-between;"><span style="color: #718096;">Unidade:</span><span style="font-weight: 700;">${p.unidade || '---'}</span></div>
-      <div style="display: flex; justify-content: space-between;"><span style="color: #718096;">Telefone:</span><span style="font-weight: 700;">${p.telefone}</span></div>
-      <div style="display: flex; justify-content: space-between;"><span style="color: #718096;">Tipo:</span><span style="font-weight: 700;">${p.eh_admin ? 'Administrador' : 'Morador'}</span></div>
-    </div>
-  `;
-}
+async function carregarMoradores() { const r=await fetch('/api/admin/moradores',{headers:{'Authorization':`Bearer ${token}`}}); const m=await r.json(); document.getElementById('admin-moradores').innerHTML=m.map(x=>`<div class="card-detalhe"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div><div style="font-weight:700;">${x.nome||'Sem nome'}</div><div style="font-size:13px;color:#718096;">Unidade: ${x.unidade||'---'} | Tel: ${x.telefone}</div></div><span style="background:${x.status==='ativo'?'#10b981':'#f59e0b'}20;color:${x.status==='ativo'?'#10b981':'#f59e0b'};padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;">${x.status.toUpperCase()}</span></div><div style="display:flex;gap:8px;"><button onclick="mudarStatusMorador(${x.id},'ativo')" style="flex:1;background:#10b981;color:white;border:none;padding:10px;border-radius:16px;font-weight:700;cursor:pointer;">Aprovar</button><button onclick="mudarStatusMorador(${x.id},'inativo')" style="flex:1;background:var(--coral);color:white;border:none;padding:10px;border-radius:16px;font-weight:700;cursor:pointer;">Inativar</button></div></div>`).join(''); }
+async function mudarStatusMorador(id,s) { await fetch(`/api/admin/moradores/${id}/status`,{method:'PATCH',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({status:s})}); carregarMoradores(); }
+async function carregarCategoriasAdmin() { const r=await fetch('/api/admin/categorias',{headers:{'Authorization':`Bearer ${token}`}}); const c=await r.json(); document.getElementById('admin-categorias').innerHTML=`<div class="card-detalhe"><h4 style="margin-bottom:10px;color:var(--teal-dark);">+ Adicionar Nova Categoria</h4><input type="text" id="nova-cat-nome" class="input-field" placeholder="Nome da categoria"><select id="nova-cat-grupo" class="input-field"><option value="Casa e Limpeza">Casa e Limpeza</option><option value="Obras e Reformas">Obras e Reformas</option><option value="Assistência Técnica e Instalações">Assistência Técnica e Instalações</option><option value="Saúde e Home Care">Saúde e Home Care</option><option value="Beleza e Bem-Estar">Beleza e Bem-Estar</option><option value="Família e Área Externa">Família e Área Externa</option><option value="Alimentação e Entregas">Alimentação e Entregas</option><option value="Educação e Idiomas">Educação e Idiomas</option><option value="Pets e Animais">Pets e Animais</option><option value="Outros">Outros</option></select><button onclick="salvarNovaCategoria()" class="btn-primary">Salvar Categoria</button></div>`+c.map(x=>`<div class="card-detalhe" style="display:flex;align-items:center;gap:12px;"><div style="width:16px;height:16px;border-radius:50%;background:${x.cor};"></div><div style="flex:1;"><div style="font-weight:700;">${x.nome}</div><div style="font-size:12px;color:#718096;">${x.grupo}</div></div></div>`).join(''); }
+async function salvarNovaCategoria() { const n=document.getElementById('nova-cat-nome').value.trim(); const g=document.getElementById('nova-cat-grupo').value; if(!n) return alert('Digite o nome'); await fetch('/api/admin/categorias',{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({nome:n,grupo:g})}); alert('Criada!'); await carregarCategorias(); carregarCategoriasAdmin(); document.getElementById('nova-cat-nome').value=''; }
+async function carregarMensagens() { const r=await fetch('/api/admin/mensagens',{headers:{'Authorization':`Bearer ${token}`}}); const m=await r.json(); document.getElementById('admin-mensagens').innerHTML=m.length===0?'<p style="text-align:center;color:#718096;padding:20px;">Nenhuma mensagem.</p>':m.map(x=>`<div class="card-detalhe"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="background:#f0fdfa;padding:3px 10px;border-radius:12px;font-size:11px;color:var(--teal-dark);font-weight:700;">${x.tipo}</span><span style="font-size:11px;color:#718096;">${new Date(x.created_at).toLocaleDateString('pt-BR')}</span></div><p style="font-size:14px;margin-bottom:8px;">${x.mensagem}</p><p style="font-size:12px;color:#718096;">De: ${x.morador_nome||'Desconhecido'} (Unidade ${x.unidade||'---'})</p></div>`).join(''); }
+async function carregarMinhasAvaliacoes() { const r=await fetch('/api/morador/avaliacoes',{headers:{'Authorization':`Bearer ${token}`}}); const a=await r.json(); document.getElementById('lista-minhas-avaliacoes').innerHTML=a.length===0?'<div class="card-detalhe" style="text-align:center;color:#718096;padding:30px;">Nenhuma avaliação.</div>':a.map(x=>`<div class="card-detalhe"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div style="font-weight:700;">${x.prestador_nome}</div><span style="background:${x.tipo==='indica'?'#f0fdfa':'#fff5f3'};color:${x.tipo==='indica'?'var(--teal-dark)':'var(--coral-dark)'};padding:4px 12px;border-radius:14px;font-size:12px;font-weight:700;">${x.tipo==='indica'?'😊 INDICA':'😠 NÃO INDICA'}</span></div>${x.comentario?`<p style="font-size:13px;color:#718096;font-style:italic;">"${x.comentario}"</p>`:''}</div>`).join(''); }
+async function carregarPerfil() { const r=await fetch('/api/morador/perfil',{headers:{'Authorization':`Bearer ${token}`}}); const p=await r.json(); document.getElementById('perfil-info').innerHTML=`<div style="display:flex;flex-direction:column;gap:10px;"><div style="display:flex;justify-content:space-between;"><span style="color:#718096;">Nome:</span><span style="font-weight:700;">${p.nome||'---'}</span></div><div style="display:flex;justify-content:space-between;"><span style="color:#718096;">Unidade:</span><span style="font-weight:700;">${p.unidade||'---'}</span></div><div style="display:flex;justify-content:space-between;"><span style="color:#718096;">Telefone:</span><span style="font-weight:700;">${p.telefone}</span></div><div style="display:flex;justify-content:space-between;"><span style="color:#718096;">Tipo:</span><span style="font-weight:700;">${p.eh_admin?'Administrador':'Morador'}</span></div></div>`; }
 
 function abrirModalCadastro() { document.getElementById('modal-cadastro').classList.remove('hidden'); }
 function fecharModalCadastro() { document.getElementById('modal-cadastro').classList.add('hidden'); }
-
 async function salvarPrestador() {
-  const nome = document.getElementById('cad-nome').value.trim();
-  const telefone = document.getElementById('cad-telefone').value.trim();
-  const tipo = document.getElementById('cad-tipo').value;
-  const categoria_id = document.getElementById('cad-categoria').value;
-  const diferencial = document.getElementById('cad-diferencial').value.trim();
-  if (!nome || !telefone || !categoria_id) { alert('Preencha nome, telefone e categoria'); return; }
-  
-  const res = await fetch('/api/prestadores', {
-    method: 'POST', headers: {'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json'},
-    body: JSON.stringify({ nome, telefone, tipo, categoria_id, diferencial })
-  });
-  if (res.ok) {
-    alert('Prestador cadastrado!');
-    fecharModalCadastro();
-    await carregarPrestadores();
-    renderizarCategorias();
-  } else { alert('Erro: ' + (await res.json()).error); }
+  const n=document.getElementById('cad-nome').value.trim(), t=document.getElementById('cad-telefone').value.trim(), ti=document.getElementById('cad-tipo').value, c=document.getElementById('cad-categoria').value, d=document.getElementById('cad-diferencial').value.trim();
+  if(!n||!t||!c) return alert('Preencha nome, telefone e categoria');
+  const r=await fetch('/api/prestadores',{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({nome:n,telefone:t,tipo:ti,categoria_id:c,diferencial:d})});
+  if(r.ok) { alert('Cadastrado!'); fecharModalCadastro(); await carregarPrestadores(); renderizarCategorias(); } else alert((await r.json()).error);
 }
 
-// --- FUNÇÕES DE EDIÇÃO DE PRESTADOR ---
-function abrirModalEdicao(prestadorId) {
-  const p = prestadores.find(x => x.id === prestadorId);
-  if (!p) return;
-  
-  if (!ehAdmin && (!user || p.cadastrado_por_morador_id !== user.id)) {
-    alert('Você não tem permissão para editar este prestador.');
-    return;
-  }
-  
-  prestadorEditandoId = prestadorId;
-  document.getElementById('edit-nome').value = p.nome || '';
-  document.getElementById('edit-telefone').value = p.telefone || '';
-  document.getElementById('edit-tipo').value = p.tipo || 'Autônomo';
-  document.getElementById('edit-diferencial').value = p.diferencial || '';
-  
-  const select = document.getElementById('edit-categoria');
-  select.innerHTML = '<option value="">Selecione...</option>';
-  categorias.forEach(c => {
-    select.innerHTML += `<option value="${c.id}" ${c.id === p.categoria_principal_id ? 'selected' : ''}>${c.nome} (${c.grupo})</option>`;
-  });
-  
+function abrirModalEdicao(id) {
+  const p=prestadores.find(x=>x.id===id); if(!p) return;
+  const ehAdminReal = ehAdmin === true || (user && user.eh_admin === true);
+  if(!ehAdminReal && (!user || p.cadastrado_por_morador_id !== user.id)) return alert('Sem permissão');
+  prestadorEditandoId=id;
+  document.getElementById('edit-nome').value=p.nome||''; document.getElementById('edit-telefone').value=p.telefone||''; document.getElementById('edit-tipo').value=p.tipo||'Morador'; document.getElementById('edit-diferencial').value=p.diferencial||'';
+  const s=document.getElementById('edit-categoria'); s.innerHTML='<option value="">Selecione...</option>'; categorias.forEach(c=>s.innerHTML+=`<option value="${c.id}" ${c.id===p.categoria_principal_id?'selected':''}>${c.nome} (${c.grupo})</option>`);
   document.getElementById('modal-edicao').classList.remove('hidden');
 }
-
-function fecharModalEdicao() {
-  document.getElementById('modal-edicao').classList.add('hidden');
-  prestadorEditandoId = null;
-}
-
+function fecharModalEdicao() { document.getElementById('modal-edicao').classList.add('hidden'); prestadorEditandoId=null; }
 async function salvarEdicaoPrestador() {
-  if (!prestadorEditandoId) return;
-  
-  const nome = document.getElementById('edit-nome').value.trim();
-  const telefone = document.getElementById('edit-telefone').value.trim();
-  const tipo = document.getElementById('edit-tipo').value;
-  const categoria_id = document.getElementById('edit-categoria').value;
-  const diferencial = document.getElementById('edit-diferencial').value.trim();
-  
-  if (!nome || !telefone || !categoria_id) {
-    alert('Preencha nome, telefone e categoria');
-    return;
-  }
-  
-  const res = await fetch(`/api/prestadores/${prestadorEditandoId}`, {
-    method: 'PATCH',
-    headers: {'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json'},
-    body: JSON.stringify({ nome, telefone, tipo, categoria_id, diferencial })
-  });
-  
-  if (res.ok) {
-    alert('Prestador atualizado com sucesso!');
-    fecharModalEdicao();
-    await carregarPrestadores();
-    renderizarCategorias();
-    abrirDetalhe(prestadorEditandoId);
-  } else {
-    const data = await res.json();
-    alert('Erro: ' + data.error);
-  }
+  if(!prestadorEditandoId) return;
+  const n=document.getElementById('edit-nome').value.trim(), t=document.getElementById('edit-telefone').value.trim(), ti=document.getElementById('edit-tipo').value, c=document.getElementById('edit-categoria').value, d=document.getElementById('edit-diferencial').value.trim();
+  if(!n||!t||!c) return alert('Preencha tudo');
+  const r=await fetch(`/api/prestadores/${prestadorEditandoId}`,{method:'PATCH',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({nome:n,telefone:t,tipo:ti,categoria_id:c,diferencial:d})});
+  if(r.ok) { alert('Atualizado!'); fecharModalEdicao(); await carregarPrestadores(); renderizarCategorias(); abrirDetalhe(prestadorEditandoId); } else alert((await r.json()).error);
 }
 
-// --- FUNÇÕES DE PREÇOS E GRÁFICO ---
-async function salvarPrecoPrestador(prestadorId) {
-  let tipo_preco = document.getElementById('preco-tipo').value.trim();
-  const valor = document.getElementById('preco-valor').value;
-  
-  if (tipo_preco === 'Outros') {
-    tipo_preco = document.getElementById('preco-tipo-outros').value.trim();
-    if (!tipo_preco) { alert('Digite o tipo personalizado'); return; }
-  }
-  
-  if (!valor) { alert('Preencha o valor'); return; }
+async function salvarPrecoPrestador(id) {
+  let t=document.getElementById('preco-tipo').value.trim(), v=document.getElementById('preco-valor').value;
+  if(t==='Outros') { t=document.getElementById('preco-tipo-outros').value.trim(); if(!t) return alert('Digite o tipo'); }
+  if(!v) return alert('Preencha o valor');
+  const r=await fetch(`/api/prestadores/${id}/precos`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({tipo_preco:t,valor:v,data_referencia:new Date().toISOString().split('T')[0]})});
+  if(r.ok) { alert('Preço adicionado!'); abrirDetalhe(id); } else alert('Erro');
+}
+function toggleOutrosPreco() { const s=document.getElementById('preco-tipo'), c=document.getElementById('preco-tipo-outros'); if(s.value==='Outros'){c.classList.remove('hidden');c.focus();}else{c.classList.add('hidden');c.value='';} }
 
-  const res = await fetch(`/api/prestadores/${prestadorId}/precos`, {
-    method: 'POST', headers: {'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json'},
-    body: JSON.stringify({ tipo_preco, valor, data_referencia: new Date().toISOString().split('T')[0] })
-  });
-  
-  if (res.ok) {
-    alert('Preço adicionado!');
-    abrirDetalhe(prestadorId);
-  } else {
-    alert('Erro ao salvar preço');
-  }
+function abrirModalEdicaoPreco(id, tipo, valor) {
+  precoEditandoId = id;
+  prestadorPrecoAtualId = prestadorAtual.id;
+  document.getElementById('edit-preco-tipo').value = tipo;
+  document.getElementById('edit-preco-valor').value = valor;
+  document.getElementById('modal-edicao-preco').classList.remove('hidden');
+}
+function fecharModalEdicaoPreco() { document.getElementById('modal-edicao-preco').classList.add('hidden'); precoEditandoId = null; }
+async function confirmarEdicaoPreco() {
+  const t = document.getElementById('edit-preco-tipo').value;
+  const v = document.getElementById('edit-preco-valor').value;
+  if(!v) return alert('Valor inválido');
+  const r = await fetch(`/api/precos/${precoEditandoId}`, { method:'PATCH', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'}, body:JSON.stringify({tipo_preco:t, valor:v}) });
+  if(r.ok) { alert('Preço atualizado!'); fecharModalEdicaoPreco(); abrirDetalhe(prestadorPrecoAtualId); } else alert((await r.json()).error);
+}
+async function deletarPreco(id) {
+  if(!confirm('Tem certeza que deseja apagar este preço?')) return;
+  const r = await fetch(`/api/precos/${id}`, { method:'DELETE', headers:{'Authorization':`Bearer ${token}`} });
+  if(r.ok) { alert('Preço apagado!'); abrirDetalhe(prestadorAtual.id); } else alert((await r.json()).error);
 }
 
-function toggleOutrosPreco() {
-  const select = document.getElementById('preco-tipo');
-  const campoOutros = document.getElementById('preco-tipo-outros');
-  if (select.value === 'Outros') {
-    campoOutros.classList.remove('hidden');
-    campoOutros.focus();
-  } else {
-    campoOutros.classList.add('hidden');
-    campoOutros.value = '';
-  }
+function preencherSelectGrafico() { const s=document.getElementById('grafico-categoria-select'); s.innerHTML='<option value="">Selecione...</option>'; categorias.forEach(c=>s.innerHTML+=`<option value="${c.id}">${c.nome}</option>`); }
+async function renderizarGraficoPrecos(id) {
+  if(!id) return;
+  const r=await fetch(`/api/categorias/${id}/precos`,{headers:{'Authorization':`Bearer ${token}`}}); const d=await r.json();
+  const l=document.getElementById('lista-precos-categoria');
+  if(d.length===0) { l.innerHTML='<p style="text-align:center;color:#718096;margin-top:20px;">Nenhum preço.</p>'; if(chartInstance){chartInstance.destroy();chartInstance=null;} return; }
+  const tipos=[...new Set(d.map(x=>x.tipo_preco))];
+  const ctx=document.getElementById('graficoPrecos').getContext('2d'); if(chartInstance)chartInstance.destroy();
+  chartInstance=new Chart(ctx,{type:'bar',data:{labels:tipos,datasets:[{label:'Média (R$)',data:tipos.map(t=>(d.filter(x=>x.tipo_preco===t).reduce((a,b)=>a+parseFloat(b.valor||0),0)/d.filter(x=>x.tipo_preco===t).length).toFixed(2)),backgroundColor:'rgba(79,184,184,0.6)',borderRadius:8}]},options:{responsive:true,scales:{y:{beginAtZero:true}}}});
+  l.innerHTML='<h4 style="margin:20px 0 10px 0;font-weight:700;">Detalhamento:</h4>'+d.map(x=>`<div class="card-detalhe" style="padding:12px;display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:700;">${x.prestador_nome}</div><div style="font-size:12px;color:#718096;">${x.tipo_preco} · ${new Date(x.data_referencia).toLocaleDateString('pt-BR')}</div></div><div style="font-weight:800;color:var(--teal-dark);font-size:18px;">R$ ${parseFloat(x.valor).toFixed(2)}</div></div>`).join('');
 }
 
-function preencherSelectGrafico() {
-  const select = document.getElementById('grafico-categoria-select');
-  select.innerHTML = '<option value="">Selecione uma categoria para comparar...</option>';
-  categorias.forEach(c => {
-    select.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
-  });
-}
-
-async function renderizarGraficoPrecos(categoriaId) {
-  if (!categoriaId) return;
-  
-  const res = await fetch(`/api/categorias/${categoriaId}/precos`, { headers: {'Authorization': `Bearer ${token}`} });
-  const dados = await res.json();
-  
-  const listaDiv = document.getElementById('lista-precos-categoria');
-  if (dados.length === 0) {
-    listaDiv.innerHTML = '<p style="text-align:center; color:#718096; margin-top:20px;">Nenhum preço registrado nesta categoria ainda.</p>';
-    if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
-    return;
-  }
-
-  const tiposUnicos = [...new Set(dados.map(d => d.tipo_preco))];
-  const labels = tiposUnicos;
-  const dataValues = tiposUnicos.map(tipo => {
-    const itens = dados.filter(d => d.tipo_preco === tipo);
-    const soma = itens.reduce((acc, curr) => acc + parseFloat(curr.valor || 0), 0);
-    return (soma / itens.length).toFixed(2);
-  });
-
-  const ctx = document.getElementById('graficoPrecos').getContext('2d');
-  if (chartInstance) chartInstance.destroy();
-  
-  chartInstance = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Preço Médio (R$)',
-        data: dataValues,
-        backgroundColor: 'rgba(79, 184, 184, 0.6)',
-        borderColor: 'rgba(79, 184, 184, 1)',
-        borderWidth: 1,
-        borderRadius: 8
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-
-  listaDiv.innerHTML = '<h4 style="margin: 20px 0 10px 0; font-weight:700;">Detalhamento:</h4>' + 
-    dados.map(d => `
-      <div class="card-detalhe" style="padding: 12px; display:flex; justify-content:space-between; align-items:center;">
-        <div>
-          <div style="font-weight:700;">${d.prestador_nome}</div>
-          <div style="font-size:12px; color:#718096;">${d.tipo_preco} · Ref: ${new Date(d.data_referencia).toLocaleDateString('pt-BR')}</div>
-        </div>
-        <div style="font-weight:800; color:var(--teal-dark); font-size:18px;">R$ ${parseFloat(d.valor).toFixed(2)}</div>
-      </div>
-    `).join('');
-}
-
-function formatarTelefone(telefone) {
-  let numeros = telefone.replace(/\D/g, '');
-  if (numeros.startsWith('55') && numeros.length > 11) {
-    numeros = numeros.slice(2);
-  }
-  if (numeros.length === 11) {
-    return `(${numeros.slice(0,2)}) ${numeros.slice(2,7)}-${numeros.slice(7)}`;
-  } else if (numeros.length === 10) {
-    return `(${numeros.slice(0,2)}) ${numeros.slice(2,6)}-${numeros.slice(6)}`;
-  }
-  return telefone;
-}
-
+function formatarTelefone(t) { let n=t.replace(/\D/g,''); if(n.startsWith('55')&&n.length>11)n=n.slice(2); if(n.length===11)return `(${n.slice(0,2)}) ${n.slice(2,7)}-${n.slice(7)}`; if(n.length===10)return `(${n.slice(0,2)}) ${n.slice(2,6)}-${n.slice(6)}`; return t; }
 function extrairDadosWhatsApp() {
-  const texto = document.getElementById('whatsapp-paste').value;
-  if (!texto.trim()) {
-    alert('Por favor, cole a mensagem do WhatsApp primeiro.');
-    return;
-  }
-
-  const matchTelefone = texto.match(/\(?\d{2}\)?\s?\d{4,5}-?\s?\d{4}/);
-  if (matchTelefone) {
-    let telefoneLimpo = matchTelefone[0].replace(/\D/g, '');
-    if (telefoneLimpo.length === 11) {
-      telefoneLimpo = `(${telefoneLimpo.slice(0,2)}) ${telefoneLimpo.slice(2,7)}-${telefoneLimpo.slice(7)}`;
-    } else if (telefoneLimpo.length === 10) {
-      telefoneLimpo = `(${telefoneLimpo.slice(0,2)}) ${telefoneLimpo.slice(2,6)}-${telefoneLimpo.slice(6)}`;
-    }
-    document.getElementById('cad-telefone').value = telefoneLimpo;
-  }
-
-  let categoriaEncontrada = null;
-  const textoLower = texto.toLowerCase();
-  const palavrasChave = {
-    'Eletricista': ['eletricista', 'luz', 'fio', 'tomada'],
-    'Encanador': ['encanador', 'cano', 'vazamento', 'pia'],
-    'Pintor': ['pintor', 'pintura', 'parede'],
-    'Diarista': ['diarista', 'faxina', 'limpeza', 'empregada'],
-    'Ar-condicionado': ['ar condicionado', 'ar-condicionado', 'climatização'],
-    'Jardineiro': ['jardineiro', 'jardim', 'grama', 'poda'],
-    'Marceneiro': ['marceneiro', 'móvel', 'madeira'],
-    'Dedetizador': ['dedetização', 'dedetizador', 'inseto', 'praga']
-  };
-
-  for (const [categoria, palavras] of Object.entries(palavrasChave)) {
-    if (palavras.some(palavra => textoLower.includes(palavra))) {
-      categoriaEncontrada = categoria;
-      break;
-    }
-  }
-
-  if (categoriaEncontrada) {
-    const select = document.getElementById('cad-categoria');
-    for (let i = 0; i < select.options.length; i++) {
-      if (select.options[i].text.toLowerCase().includes(categoriaEncontrada.toLowerCase())) {
-        select.selectedIndex = i;
-        break;
-      }
-    }
-  }
-
-  let textoSemTelefone = texto.replace(matchTelefone ? matchTelefone[0] : '', '');
-  let textoLimpo = textoSemTelefone.replace(/indicado|recomendo|contato|tel|telefone|whatsapp|zap|ótimo|otimo|bom|boa/gi, '').trim();
-  const possiveisNomes = textoLimpo.split(/[,;.]/)[0].trim().split(' ').slice(0, 3).join(' ');
-  if (possiveisNomes.length > 2) {
-    document.getElementById('cad-nome').value = possiveisNomes.charAt(0).toUpperCase() + possiveisNomes.slice(1);
-  }
-
-  alert('✨ Dados extraídos! Verifique se o nome e a categoria estão corretos.');
+  const t=document.getElementById('whatsapp-paste').value; if(!t.trim()) return alert('Cole a mensagem');
+  const m=t.match(/\(?\d{2}\)?\s?\d{4,5}-?\s?\d{4}/);
+  if(m) { let n=m[0].replace(/\D/g,''); if(n.length===11)n=`(${n.slice(0,2)}) ${n.slice(2,7)}-${n.slice(7)}`; else if(n.length===10)n=`(${n.slice(0,2)}) ${n.slice(2,6)}-${n.slice(6)}`; document.getElementById('cad-telefone').value=n; }
+  let cat=null; const tl=t.toLowerCase(); const p={'Eletricista':['eletricista','luz'],'Encanador':['encanador','cano'],'Pintor':['pintor'],'Diarista':['diarista','faxina'],'Ar-condicionado':['ar condicionado'],'Jardineiro':['jardineiro'],'Marceneiro':['marceneiro'],'Dedetizador':['dedetização']};
+  for(const[k,v]of Object.entries(p)) if(v.some(x=>tl.includes(x))){cat=k;break;}
+  if(cat) { const s=document.getElementById('cad-categoria'); for(let i=0;i<s.options.length;i++) if(s.options[i].text.toLowerCase().includes(cat.toLowerCase())){s.selectedIndex=i;break;} }
+  let st=t.replace(m?m[0]:'','').replace(/indicado|recomendo|contato|tel|telefone|whatsapp|zap|ótimo|otimo|bom|boa/gi,'').trim(); const nm=st.split(/[,;.]/)[0].trim().split(' ').slice(0,3).join(' '); if(nm.length>2) document.getElementById('cad-nome').value=nm.charAt(0).toUpperCase()+nm.slice(1);
+  alert('✨ Dados extraídos!');
 }
 </script>
 </body>
