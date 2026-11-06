@@ -148,6 +148,24 @@ app.get('/api/admin/categorias', authenticate, (req, res) => {
 });
 
 app.post('/api/admin/categorias', authenticate, (req, res) => {
+// Rota para deletar categoria (só admin)
+app.delete('/api/admin/categorias/:id', authenticate, (req, res) => {
+  if (!req.user.eh_admin) return res.status(403).json({ error: 'Acesso negado' });
+  const catId = req.params.id;
+  
+  // Verificar se tem prestadores vinculados
+  db.get(`SELECT COUNT(*) as count FROM prestadores WHERE categoria_principal_id = ?`, [catId], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Erro ao verificar' });
+    if (row.count > 0) return res.status(400).json({ error: 'Categoria tem prestadores vinculados' });
+    
+    // Deletar categoria
+    db.run(`DELETE FROM categorias WHERE id = ? AND condominio_id = ?`, [catId, req.user.condominio_id], function(err) {
+      if (err) return res.status(500).json({ error: 'Erro ao deletar' });
+      if (this.changes === 0) return res.status(404).json({ error: 'Categoria não encontrada' });
+      res.json({ success: true });
+    });
+  });
+});
   if (!req.user.eh_admin) return res.status(403).json({ error: 'Acesso negado' });
   db.run(`INSERT INTO categorias (condominio_id, nome, grupo, cor) VALUES (?, ?, ?, ?)`, [req.user.condominio_id, req.body.nome, req.body.grupo, req.body.cor || '#6B7280'], function(err) { if (err) return res.status(500).json({ error: 'Erro' }); res.json({ success: true, id: this.lastID }); });
 });
@@ -390,3 +408,21 @@ app.get('/', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'index.
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => console.log(`Servidor rodando na porta ${PORT}`));
+// Rota para deletar categoria (só admin)
+app.delete('/api/admin/categorias/:id', authenticate, (req, res) => {
+  if (!req.user.eh_admin) return res.status(403).json({ error: 'Acesso negado' });
+  const catId = req.params.id;
+  
+  // Verificar se tem prestadores vinculados
+  db.get(`SELECT COUNT(*) as count FROM prestadores WHERE categoria_principal_id = ?`, [catId], (err, row) => {
+    if (err) return res.status(500).json({ error: 'Erro ao verificar' });
+    if (row.count > 0) return res.status(400).json({ error: 'Categoria tem prestadores vinculados' });
+    
+    // Deletar categoria
+    db.run(`DELETE FROM categorias WHERE id = ? AND condominio_id = ?`, [catId, req.user.condominio_id], function(err) {
+      if (err) return res.status(500).json({ error: 'Erro ao deletar' });
+      if (this.changes === 0) return res.status(404).json({ error: 'Categoria não encontrada' });
+      res.json({ success: true });
+    });
+  });
+});
