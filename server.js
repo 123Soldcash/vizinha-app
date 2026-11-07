@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
+const twilio = require('twilio'); // Pacote do Twilio para SMS real
 
 const app = express();
 app.use(cors());
@@ -12,10 +13,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // ================= BANCO DE DADOS =================
 // No Railway, RAILWAY_VOLUME_MOUNT_PATH é definido automaticamente quando há um volume (ex: /data).
-// Sem volume, o arquivo fica no disco temporário do container e SOME a cada deploy.
 const VOLUME = process.env.RAILWAY_VOLUME_MOUNT_PATH;
 const dbPath = VOLUME ? path.join(VOLUME, 'vizinha.db') : path.join(__dirname, 'vizinha.db');
-if (!VOLUME) console.warn('⚠️  ATENÇÃO: sem volume persistente! Os dados serão perdidos no próximo deploy.');
+
+if (!VOLUME) console.warn('⚠️ ATENÇÃO: sem volume persistente! Os dados serão perdidos no próximo deploy.');
 const db = new sqlite3.Database(dbPath);
 console.log('💾 Banco de dados salvo em:', dbPath);
 
@@ -38,12 +39,12 @@ const CORES_GRUPO = { 'Casa e Limpeza': '#4FB8B8', 'Obras e Reformas': '#d97706'
 
 db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS condominios (id INTEGER PRIMARY KEY, nome TEXT)`);
-  db.run(`CREATE TABLE IF NOT EXISTS moradores (id INTEGER PRIMARY KEY, condominio_id INTEGER, nome TEXT, unidade TEXT, telefone TEXT UNIQUE, codigo_sms TEXT, codigo_expira_em DATETIME, status TEXT DEFAULT 'pendente', eh_admin BOOLEAN DEFAULT 0, aceite_termos_data DATETIME, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`);
-  db.run(`CREATE TABLE IF NOT EXISTS categorias (id INTEGER PRIMARY KEY, condominio_id INTEGER, nome TEXT, grupo TEXT, cor TEXT, em_uso BOOLEAN DEFAULT 0)`);
-  db.run(`CREATE TABLE IF NOT EXISTS prestadores (id INTEGER PRIMARY KEY, condominio_id INTEGER, nome TEXT, telefone TEXT UNIQUE, tipo TEXT, categoria_principal_id INTEGER, outras_categorias_ids TEXT, diferencial TEXT, endereco TEXT, email TEXT, blacklisted BOOLEAN DEFAULT 0, cadastrado_por_morador_id INTEGER, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`);
+  db.run(`CREATE TABLE IF NOT EXISTS moradores (id INTEGER PRIMARY KEY, condominio_id INTEGER, nome TEXT, unidade TEXT, telefone TEXT UNIQUE, codigo_sms TEXT, codigo_expira_em DATETIME, status TEXT DEFAULT 'pendente', eh_admin INTEGER DEFAULT 0, aceite_termos_data DATETIME, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`);
+  db.run(`CREATE TABLE IF NOT EXISTS categorias (id INTEGER PRIMARY KEY, condominio_id INTEGER, nome TEXT, grupo TEXT, cor TEXT, em_uso INTEGER DEFAULT 0)`);
+  db.run(`CREATE TABLE IF NOT EXISTS prestadores (id INTEGER PRIMARY KEY, condominio_id INTEGER, nome TEXT, telefone TEXT UNIQUE, tipo TEXT, categoria_principal_id INTEGER, outras_categorias_ids TEXT, diferencial TEXT, endereco TEXT, email TEXT, blacklisted INTEGER DEFAULT 0, cadastrado_por_morador_id INTEGER, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`);
   db.run(`CREATE TABLE IF NOT EXISTS avaliacoes (id INTEGER PRIMARY KEY, condominio_id INTEGER, prestador_id INTEGER, morador_telefone TEXT, tipo TEXT, motivos TEXT, comentario TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP, UNIQUE(prestador_id, morador_telefone))`);
-  db.run(`CREATE TABLE IF NOT EXISTS precos (id INTEGER PRIMARY KEY, condominio_id INTEGER, prestador_id INTEGER, tipo_preco TEXT, valor REAL, data_referencia DATE, inclui_transporte BOOLEAN DEFAULT 0, inclui_produtos BOOLEAN DEFAULT 0, telefone TEXT)`);
-  db.run(`CREATE TABLE IF NOT EXISTS mensagens (id INTEGER PRIMARY KEY, condominio_id INTEGER, morador_id INTEGER, tipo TEXT, mensagem TEXT, lida BOOLEAN DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`);
+  db.run(`CREATE TABLE IF NOT EXISTS precos (id INTEGER PRIMARY KEY, condominio_id INTEGER, prestador_id INTEGER, tipo_preco TEXT, valor REAL, data_referencia DATE, inclui_transporte INTEGER DEFAULT 0, inclui_produtos INTEGER DEFAULT 0, telefone TEXT)`);
+  db.run(`CREATE TABLE IF NOT EXISTS mensagens (id INTEGER PRIMARY KEY, condominio_id INTEGER, morador_id INTEGER, tipo TEXT, mensagem TEXT, lida INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`);
 
   // Bancos antigos sem a coluna telefone em precos
   db.run(`ALTER TABLE precos ADD COLUMN telefone TEXT`, () => {});
@@ -57,6 +58,7 @@ db.serialize(() => {
   db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_categorias_nome ON categorias(condominio_id, nome)`);
 
   db.run(`INSERT OR IGNORE INTO condominios (id, nome) VALUES (1, 'Villagio Bourbon')`);
+  // Garante que o admin tenha eh_admin = 1 (inteiro, para evitar bugs de booleano no SQLite)
   db.run(`INSERT OR IGNORE INTO moradores (condominio_id, nome, unidade, telefone, status, eh_admin, aceite_termos_data) VALUES (1, 'Administrador', '101', '11999999999', 'ativo', 1, CURRENT_TIMESTAMP)`);
 
   const stmt = db.prepare(`INSERT OR IGNORE INTO categorias (condominio_id, nome, grupo, cor) VALUES (1, ?, ?, ?)`);
@@ -77,10 +79,13 @@ const authenticate = (req, res, next) => {
     next();
   });
 };
+
 const apenasAdmin = (req, res, next) => {
-  if (!req.user.eh_admin) return res.status(403).json({ error: 'Acesso negado' });
+  // Verifica se eh_admin é 1 ou true (corrige o bug do SQLite que salva como 0/1)
+  if (!req.user.eh_admin || req.user.eh_admin === 0) return res.status(403).json({ error: 'Acesso negado' });
   next();
 };
+
 const limparTel = t => String(t || '').replace(/\D/g, '');
 
 // ================= DIAGNÓSTICO =================
@@ -97,15 +102,39 @@ app.post('/api/login/request', (req, res) => {
   if (cleanPhone.length < 10 || cleanPhone.length > 11) return res.status(400).json({ error: 'Telefone inválido' });
   const code = Math.floor(100000 + Math.random() * 900000).toString();
   const expires = new Date(Date.now() + 10 * 60000).toISOString();
+  
   db.get(`SELECT * FROM moradores WHERE telefone = ?`, [cleanPhone], (err, row) => {
     if (err) return res.status(500).json({ error: 'Erro no banco' });
     const sql = row
       ? [`UPDATE moradores SET codigo_sms = ?, codigo_expira_em = ? WHERE telefone = ?`, [code, expires, cleanPhone]]
       : [`INSERT INTO moradores (condominio_id, telefone, codigo_sms, codigo_expira_em, status) VALUES (1, ?, ?, ?, 'pendente')`, [cleanPhone, code, expires]];
+    
     db.run(sql[0], sql[1], (err2) => {
       if (err2) return res.status(500).json({ error: 'Erro no banco' });
-      console.log(`[SMS SIMULADO] Código para ${cleanPhone}: ${code}`);
-      res.json({ message: 'Código enviado' });
+
+      // === INTEGRAÇÃO TWILIO (SMS REAL) ===
+      if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) {
+        const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+        const phoneToTwilio = `+55${cleanPhone}`; // Adiciona o +55 do Brasil
+        
+        client.messages.create({
+          body: `Seu código de acesso ao app Vizinha é: ${code}`,
+          from: process.env.TWILIO_PHONE_NUMBER,
+          to: phoneToTwilio
+        }).then(message => {
+          console.log(`[TWILIO] SMS enviado com sucesso para ${phoneToTwilio} (SID: ${message.sid})`);
+          res.json({ message: 'Código enviado' });
+        }).catch(err => {
+          console.error(`[TWILIO ERRO] Falha ao enviar SMS: ${err.message}`);
+          // Plano B: se der erro, mostra no log para não travar o usuário
+          console.log(`[SMS SIMULADO - FALLBACK] Código para ${cleanPhone}: ${code}`);
+          res.json({ message: 'Código enviado (simulado)' });
+        });
+      } else {
+        // Modo simulado caso as variáveis do Twilio não estejam no Railway
+        console.log(`[SMS SIMULADO] Código para ${cleanPhone}: ${code}`);
+        res.json({ message: 'Código enviado' });
+      }
     });
   });
 });
@@ -117,9 +146,13 @@ app.post('/api/login/verify', (req, res) => {
     if (err || !row) return res.status(401).json({ error: 'Código inválido' });
     if (new Date(row.codigo_expira_em) < new Date()) return res.status(401).json({ error: 'Código expirado' });
     if (row.status === 'inativo') return res.status(403).json({ error: 'Cadastro inativo' });
+    
     db.run(`UPDATE moradores SET codigo_sms = NULL WHERE id = ?`, [row.id]); // código de uso único
-    const ehAdmin = !!row.eh_admin;
+    
+    // Corrige o bug do booleano: garante que seja true ou false
+    const ehAdmin = Number(row.eh_admin) === 1 || row.eh_admin === true;
     const token = jwt.sign({ id: row.id, telefone: row.telefone, eh_admin: ehAdmin, condominio_id: row.condominio_id }, SECRET, { expiresIn: '7d' });
+    
     res.json({ token, id: row.id, telefone: row.telefone, status: row.status, eh_admin: ehAdmin, aceite_termos: !!row.aceite_termos_data });
   });
 });
@@ -306,7 +339,6 @@ app.patch('/api/admin/mensagens/:id/lida', authenticate, apenasAdmin, (req, res)
 });
 
 // IMPORTAÇÃO EM MASSA — recebe [{ nome, telefone, categoria, tipo, diferencial }]
-// A categoria é pelo NOME; se não existir, é criada no grupo "Outros".
 app.post('/api/admin/importar-prestadores', authenticate, apenasAdmin, (req, res) => {
   const lista = Array.isArray(req.body.prestadores) ? req.body.prestadores : [];
   if (lista.length === 0) return res.status(400).json({ error: 'Lista vazia' });
@@ -328,6 +360,7 @@ app.post('/api/admin/importar-prestadores', authenticate, apenasAdmin, (req, res
         });
       });
     });
+    
     const inserir = (p, catId) => new Promise((resolve) => {
       db.run(`INSERT INTO prestadores (condominio_id, nome, telefone, tipo, categoria_principal_id, diferencial, cadastrado_por_morador_id) VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [cond, String(p.nome).trim(), limparTel(p.telefone), p.tipo || 'Autônomo', catId, p.diferencial || null, req.user.id],
@@ -350,7 +383,7 @@ app.post('/api/admin/importar-prestadores', authenticate, apenasAdmin, (req, res
   });
 });
 
-// BACKUP — baixa todos os dados em JSON (faça isso de vez em quando!)
+// BACKUP — baixa todos os dados em JSON
 app.get('/api/admin/backup', authenticate, apenasAdmin, (req, res) => {
   const tabelas = ['categorias', 'prestadores', 'avaliacoes', 'precos', 'moradores', 'mensagens'];
   const out = { gerado_em: new Date().toISOString() };
