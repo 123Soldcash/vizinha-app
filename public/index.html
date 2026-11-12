@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Vizinha - Villagio Bourbon</title>
   
-  <!-- PWA -->
   <meta name="theme-color" content="#4FB8B8">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -28,8 +27,7 @@
     .app-header { background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%); color: white; padding: 16px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(79,184,184,0.3); }
     .header-container { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
     .header-left { display: flex; align-items: center; gap: 12px; flex: 1; }
-    .header-logo { width: 48px; height: 48px; border-radius: 12px; background: white; padding: 4px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: transform 0.3s; }
-    .header-logo:active { transform: rotate(-5deg) scale(0.95); }
+    .header-logo { width: 48px; height: 48px; border-radius: 12px; background: white; padding: 4px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
     .header-title-group { display: flex; flex-direction: column; }
     .header-title { font-size: 24px; font-weight: 800; margin: 0; line-height: 1.1; }
     .header-frase { font-family: 'Caveat', cursive; font-size: 18px; font-weight: 500; color: #fff5f3; margin-top: 2px; transform: rotate(-1deg); white-space: nowrap; }
@@ -214,6 +212,11 @@
           <button onclick="baixarBackup()" class="btn-secondary">Baixar backup (JSON)</button>
           <p id="health-info" style="font-size:12px;color:#718096;margin-top:10px;"></p>
         </div>
+        <div class="card-detalhe" style="border: 2px solid #fee2e2;">
+          <h4 style="margin-bottom:8px;color:#dc2626;">🧹 Zona de Perigo (Admin)</h4>
+          <p style="font-size:13px;color:#718096;margin-bottom:10px;">Apaga TODOS os preços e avaliações do app. Útil após testes.</p>
+          <button onclick="limparDadosTeste()" style="background:#dc2626; color:white; border:none; padding:12px; border-radius:20px; font-weight:700; cursor:pointer; width:100%;">Apagar Todos Preços e Avaliações</button>
+        </div>
       </div>
     </div>
   </main>
@@ -253,7 +256,6 @@
       <option value="Morador">Morador</option>
     </select>
     
-    <!-- AUTOCOMPLETAR INTELIGENTE -->
     <label style="display: block; font-weight: 700; margin-bottom: 6px;">Categoria *</label>
     <input type="text" id="cad-categoria-texto" class="input-field" list="sugestoes-categorias" placeholder="Digite para buscar (ex: enc...)">
     <datalist id="sugestoes-categorias"></datalist>
@@ -380,7 +382,6 @@ async function initApp() {
 async function carregarCategorias() { 
   const res = await fetch('/api/categorias', { headers: {'Authorization': `Bearer ${token}`} }); 
   categorias = await res.json(); 
-  
   const datalist = document.getElementById('sugestoes-categorias');
   datalist.innerHTML = '';
   categorias.forEach(c => {
@@ -423,51 +424,69 @@ function abrirCategoria(id, nome) {
 }
 function voltarParaCategorias() { showTab('home'); }
 
+async function carregarAvaliacoesDetalhe(idPrestador) {
+  const res = await fetch(`/api/prestadores/${idPrestador}/avaliacoes-detalhe`, { headers: {'Authorization': `Bearer ${token}`} });
+  const avaliacoes = await res.json();
+  const ehAdminReal = !!ehAdmin || !!(user && user.eh_admin);
+  
+  if (avaliacoes.length === 0) return '<p style="color:#718096;font-size:14px;">Nenhuma avaliação ainda.</p>';
+  
+  return avaliacoes.map(a => `
+    <div style="border-bottom:1px solid #eee; padding:10px 0; display:flex; justify-content:space-between; align-items:start;">
+      <div>
+        <span style="font-weight:bold; color:${a.tipo==='indica'?'var(--teal)':'var(--coral)'}">${a.tipo === 'indica' ? '😊 Indica' : '😠 Não Indica'}</span>
+        ${a.motivos ? `<div style="font-size:12px;">Motivos: ${JSON.parse(a.motivos).join(', ')}</div>` : ''}
+        ${a.comentario ? `<div style="font-style:italic; font-size:13px;">"${a.comentario}"</div>` : ''}
+        <div style="font-size:10px; color:#999;">De: ${a.morador_telefone} em ${new Date(a.created_at).toLocaleDateString()}</div>
+      </div>
+      ${ehAdminReal ? `<button onclick="apagarAvaliacao(${a.id}, ${idPrestador})" style="background:none; border:none; color:red; cursor:pointer; font-size:18px;">🗑️</button>` : ''}
+    </div>
+  `).join('');
+}
+
+async function apagarAvaliacao(idAvaliacao, idPrestador) {
+  if(!confirm('Apagar esta avaliação?')) return;
+  const r = await fetch(`/api/admin/avaliacoes/${idAvaliacao}`, { method:'DELETE', headers:{'Authorization':`Bearer ${token}`} });
+  if(r.ok) { 
+    showToast('Avaliação apagada!'); 
+    abrirDetalhe(idPrestador);
+  }
+}
+
 async function abrirDetalhe(id) {
   const p = prestadores.find(x => x.id === id); if(!p) return; prestadorAtual = p;
-  const r = resumoAvaliacoes[p.id]||{indica:0,nao_indica:0}; const t = r.indica+r.nao_indica;
   const resP = await fetch(`/api/prestadores/${p.id}/precos`, { headers: {'Authorization': `Bearer ${token}`} });
   const precos = await resP.json();
   
   const ehAdminReal = !!ehAdmin || !!(user && user.eh_admin);
   const podeEditarPrestador = ehAdminReal || (user && p.cadastrado_por_morador_id === user.id);
-  const categoriaObj = categorias.find(c => c.id === p.categoria_principal_id);
-  const ehSaude = categoriaObj && categoriaObj.grupo === 'Saúde e Home Care';
 
-  let htmlPrecos = precos.length === 0 ? '<p style="color:#718096;font-size:14px;">Nenhum preço cadastrado.</p>' : precos.map(pr => {
+  let htmlPrecos = precos.length === 0 ? '<p style="color:#718096;font-size:14px;">Nenhum preço.</p>' : precos.map(pr => {
     const podeEditarPreco = ehAdminReal || (user && pr.telefone === user.telefone);
     return `<div class="preco-item">
       <div style="flex:1;"><div style="font-weight:700;">${pr.tipo_preco}</div><div style="font-size:11px;color:#718096;">Ref: ${new Date(pr.data_referencia).toLocaleDateString('pt-BR')}</div></div>
       <div class="preco-valor">R$ ${parseFloat(pr.valor).toFixed(2)}</div>
-      ${podeEditarPreco ? `<div class="preco-acoes"><button class="btn-acao" onclick="deletarPreco(${pr.id})">🗑️</button></div>` : ''}
+      ${podeEditarPreco ? `<div class="preco-acoes">
+        ${ehAdminReal ? `<button class="btn-acao" onclick="editarPrecoAdmin(${pr.id}, '${pr.tipo_preco}', ${pr.valor}, ${p.id})">✏️</button>` : ''}
+        <button class="btn-acao" onclick="deletarPreco(${pr.id})">🗑️</button>
+      </div>` : ''}
     </div>`;
   }).join('');
 
-  let htmlAvaliacao = `
-    <div class="card-detalhe">
-      <h3 style="font-size:16px;font-weight:800;margin-bottom:12px;">Avaliações (${t})</h3>
-      <p style="color:#718096;margin-bottom:16px;">${r.indica} indicam · ${r.nao_indica} não indicam</p>
-      <div class="avaliacao-cards">
-        <div class="avaliacao-card" id="btn-indica" onclick="selecionarAvaliacao('indica')"><div class="avaliacao-emoji">😊</div><div class="avaliacao-label">INDICA</div></div>
-        <div class="avaliacao-card" id="btn-nao-indica" onclick="selecionarAvaliacao('nao_indica')"><div class="avaliacao-emoji">😠</div><div class="avaliacao-label">NÃO INDICA</div></div>
-      </div>
-  `;
-  
-  if (ehSaude) {
-    htmlAvaliacao += `<div class="aviso-saude">⚕️ <strong>Profissional de Saúde:</strong> Por ética e privacidade, não permitimos comentários. Seu voto anônimo é suficiente!</div>`;
-  } else {
-    htmlAvaliacao += `
-      <div id="secao-motivos" class="hidden"><label style="display:block;font-weight:700;margin-bottom:6px;color:var(--teal-dark);">Por que você indica?</label><div class="chips-container"><button onclick="toggleChip(this)" class="chip">⏱️ Pontual</button><button onclick="toggleChip(this)" class="chip">💰 Preço justo</button><button onclick="toggleChip(this)" class="chip">🤝 Bom atendimento</button><button onclick="toggleChip(this)" class="chip">👔 Profissional</button></div></div>
-      <div id="secao-comentario" class="hidden"><label style="display:block;font-weight:700;margin-bottom:6px;">Comentário</label><textarea id="comentario" class="input-field"></textarea></div>
-    `;
-  }
-  htmlAvaliacao += `<button onclick="enviarAvaliacao(${ehSaude})" class="btn-primary">Enviar Avaliação</button></div>`;
+  const htmlAvaliacoesLista = await carregarAvaliacoesDetalhe(p.id);
 
   document.getElementById('conteudo-detalhe').innerHTML = `
     <div class="card-detalhe">
-      <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;">${p.nome}</h2>
-      <p style="color:#718096;font-size:14px;">${p.tipo} · ${p.categoria_nome}</p>
+      <div style="display:flex; justify-content:space-between; align-items:start;">
+        <div>
+          <h2 style="font-size:20px;font-weight:800;margin-bottom:8px;">${p.nome}</h2>
+          <p style="color:#718096;font-size:14px;">${p.tipo} · ${p.categoria_nome}</p>
+        </div>
+        ${ehAdminReal ? `<button onclick="apagarPrestadorAdmin(${p.id})" style="background:#fee2e2; color:#dc2626; border:none; padding:8px 12px; border-radius:12px; font-weight:bold; cursor:pointer;">🗑️ Apagar</button>` : ''}
+      </div>
+      
       ${p.diferencial ? `<p style="font-style:italic;color:#718096;margin-top:10px;">"${p.diferencial}"</p>` : ''}
+      
       <div style="display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:16px;border-top:1px solid #e2e8f0;">
         ${podeEditarPrestador ? `<button onclick="abrirModalEdicao(${p.id})" class="btn-editar" title="Editar">✏️</button>` : ''}
         <span style="font-size:15px;font-weight:700;flex:1;">${formatarTelefone(p.telefone)}</span>
@@ -475,19 +494,40 @@ async function abrirDetalhe(id) {
         <a href="tel:${p.telefone.replace(/\D/g,'')}" class="btn-ligar"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></a>
       </div>
     </div>
+
     <div class="card-detalhe">
       <h3 style="font-size:16px;font-weight:800;margin-bottom:12px;">💰 Tabela de Preços</h3>
       ${htmlPrecos}
       <div style="margin-top:15px;border-top:1px solid #e2e8f0;padding-top:15px;">
-        <h4 style="font-size:14px;margin-bottom:8px;">💰 Conhece os preços? Contribua!</h4>
-        <select id="preco-tipo" class="input-field"><option value="Diária">Diária</option><option value="Por Hora">Por Hora</option><option value="Mensal">Mensal</option><option value="Por Visita">Por Visita</option><option value="Por Serviço">Por Serviço</option><option value="Outros">Outros</option></select>
+        <h4 style="font-size:14px;margin-bottom:8px;">💰 Contribuir com preço</h4>
+        <select id="preco-tipo" class="input-field"><option value="Diária">Diária</option><option value="Por Hora">Por Hora</option><option value="Mensal">Mensal</option><option value="Por Visita">Por Visita</option><option value="Por Serviço">Por Serviço</option></select>
         <input type="number" id="preco-valor" class="input-field" placeholder="Valor (R$)" step="0.01">
-        <button onclick="salvarPrecoPrestador(${p.id})" class="btn-secondary">Adicionar Preço</button>
+        <button onclick="salvarPrecoPrestador(${p.id})" class="btn-secondary">Adicionar</button>
       </div>
     </div>
-    ${htmlAvaliacao}
+
+    <div class="card-detalhe">
+      <h3 style="font-size:16px;font-weight:800;margin-bottom:12px;">⭐ Avaliações</h3>
+      ${htmlAvaliacoesLista}
+    </div>
   `;
   showTab('detalhe-prestador');
+}
+
+async function apagarPrestadorAdmin(id) {
+  if(!confirm('Tem certeza? Isso apagará o prestador, preços e avaliações.')) return;
+  const r = await fetch(`/api/admin/prestadores/${id}`, { method:'DELETE', headers:{'Authorization':`Bearer ${token}`} });
+  if(r.ok) { showToast('Prestador apagado!'); showTab('home'); await carregarPrestadores(); renderizarCategorias(); }
+}
+
+function editarPrecoAdmin(id, tipo, valor, idPrestador) {
+  const novoValor = prompt(`Editar preço (${tipo}):`, valor);
+  if (novoValor !== null && novoValor !== '') {
+    fetch(`/api/admin/precos/${id}`, {
+      method:'PATCH', headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
+      body:JSON.stringify({valor: novoValor, tipo_preco: tipo})
+    }).then(r => { if(r.ok) { showToast('Preço atualizado!'); abrirDetalhe(idPrestador); } });
+  }
 }
 
 function selecionarAvaliacao(t) { tipoAvaliacao=t; document.getElementById('btn-indica').classList.toggle('selected-indica',t==='indica'); document.getElementById('btn-nao-indica').classList.toggle('selected-nao',t==='nao_indica'); const sm=document.getElementById('secao-motivos'); const sc=document.getElementById('secao-comentario'); if(sm)sm.classList.toggle('hidden',t!=='indica'); if(sc)sc.classList.toggle('hidden',t!=='indica'); }
@@ -555,7 +595,14 @@ async function importarPrestadores() {
 }
 
 async function baixarBackup() { const r=await fetch('/api/admin/backup',{headers:{'Authorization':`Bearer ${token}`}}); if(!r.ok) return alert('Erro no backup'); const b=await r.blob(); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='vizinha-backup-'+new Date().toISOString().slice(0,10)+'.json'; a.click(); }
-async function carregarHealth() { try { const d=await (await fetch('/api/health')).json(); document.getElementById('health-info').textContent=`Banco: ${d.banco} · Volume persistente: ${d.volume_persistente?'SIM ✅':'NÃO ⚠️'} · ${d.categorias} categorias · ${d.prestadores} prestadores · ${d.moradores} moradores`; } catch(e){} }
+
+async function limparDadosTeste() {
+  if(!confirm('ATENÇÃO: Isso apagará TODOS os preços e avaliações do sistema. Continuar?')) return;
+  const r = await fetch('/api/admin/limpar-testes', { method:'POST', headers:{'Authorization':`Bearer ${token}`} });
+  if(r.ok) { showToast('Dados de teste limpos! 🧹'); location.reload(); }
+}
+
+async function carregarHealth() { try { const d=await (await fetch('/api/health')).json(); document.getElementById('health-info').textContent=`${d.categorias} categorias · ${d.prestadores} prestadores · ${d.moradores} moradores`; } catch(e){} }
 async function salvarNovaCategoria() { const n=document.getElementById('nova-cat-nome').value.trim(); const g=document.getElementById('nova-cat-grupo').value; if(!n) return alert('Digite o nome'); await fetch('/api/admin/categorias',{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({nome:n,grupo:g})}); alert('Criada!'); await carregarCategorias(); carregarCategoriasAdmin(); document.getElementById('nova-cat-nome').value=''; }
 async function carregarMensagens() { const r=await fetch('/api/admin/mensagens',{headers:{'Authorization':`Bearer ${token}`}}); const m=await r.json(); document.getElementById('admin-mensagens').innerHTML=m.length===0?'<p style="text-align:center;color:#718096;padding:20px;">Nenhuma mensagem.</p>':m.map(x=>`<div class="card-detalhe"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="background:#f0fdfa;padding:3px 10px;border-radius:12px;font-size:11px;color:var(--teal-dark);font-weight:700;">${x.tipo}</span><span style="font-size:11px;color:#718096;">${new Date(x.created_at).toLocaleDateString('pt-BR')}</span></div><p style="font-size:14px;margin-bottom:8px;">${x.mensagem}</p><p style="font-size:12px;color:#718096;">De: ${x.morador_nome||'Desconhecido'} (Unidade ${x.unidade||'---'})</p></div>`).join(''); }
 async function carregarMinhasAvaliacoes() { const r=await fetch('/api/morador/avaliacoes',{headers:{'Authorization':`Bearer ${token}`}}); const a=await r.json(); document.getElementById('lista-minhas-avaliacoes').innerHTML=a.length===0?'<div class="card-detalhe" style="text-align:center;color:#718096;padding:30px;">Nenhuma avaliação.</div>':a.map(x=>`<div class="card-detalhe"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div style="font-weight:700;">${x.prestador_nome}</div><span style="background:${x.tipo==='indica'?'#f0fdfa':'#fff5f3'};color:${x.tipo==='indica'?'var(--teal-dark)':'var(--coral-dark)'};padding:4px 12px;border-radius:14px;font-size:12px;font-weight:700;">${x.tipo==='indica'?'😊 INDICA':'😠 NÃO INDICA'}</span></div>${x.comentario?`<p style="font-size:13px;color:#718096;font-style:italic;">"${x.comentario}"</p>`:''}</div>`).join(''); }
@@ -582,7 +629,6 @@ async function salvarPrestador() {
   if(!nome || !telefone || !categoriaTexto) return alert('Preencha nome, telefone e categoria');
 
   const catEncontrada = categorias.find(c => c.nome.toLowerCase() === categoriaTexto.toLowerCase());
-  
   let categoria_id = catEncontrada ? catEncontrada.id : null;
 
   if (!categoria_id) {
