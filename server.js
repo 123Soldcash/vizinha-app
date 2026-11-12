@@ -137,7 +137,7 @@ app.post('/api/login/verify', (req, res) => {
   });
 });
 
-// ================= DADOS =================
+// ================= DADOS BÁSICOS =================
 app.get('/api/categorias', authenticate, (req, res) => {
   db.all(`SELECT * FROM categorias WHERE condominio_id = ? ORDER BY grupo, nome`, [req.user.condominio_id], (err, rows) => res.json(err ? [] : rows));
 });
@@ -167,7 +167,6 @@ app.patch('/api/prestadores/:id', authenticate, (req, res) => {
   const { nome, telefone, tipo, categoria_id, diferencial } = req.body;
   const { id: morador_id, eh_admin, condominio_id } = req.user;
   
-  // Admin pode editar qualquer um, morador só o seu
   db.get(`SELECT * FROM prestadores WHERE id = ? AND condominio_id = ?`, [req.params.id, condominio_id], (err, p) => {
     if (err || !p) return res.status(404).json({ error: 'Não encontrado' });
     if (!eh_admin && p.cadastrado_por_morador_id !== morador_id) return res.status(403).json({ error: 'Sem permissão' });
@@ -181,23 +180,12 @@ app.patch('/api/prestadores/:id', authenticate, (req, res) => {
   });
 });
 
-// NOVA: Admin pode apagar prestador
-app.delete('/api/admin/prestadores/:id', authenticate, apenasAdmin, (req, res) => {
-  db.run(`DELETE FROM prestadores WHERE id = ? AND condominio_id = ?`, [req.params.id, req.user.condominio_id], function(err) {
-    if (err) return res.status(500).json({ error: 'Erro' });
-    if (this.changes === 0) return res.status(404).json({ error: 'Não encontrado' });
-    // Apaga preços e avaliações associados
-    db.run(`DELETE FROM precos WHERE prestador_id = ?`, [req.params.id]);
-    db.run(`DELETE FROM avaliacoes WHERE prestador_id = ?`, [req.params.id]);
-    res.json({ success: true });
-  });
-});
-
 // ================= AVALIAÇÕES E PREÇOS =================
 app.get('/api/prestadores/avaliacoes-resumo', authenticate, (req, res) => {
   db.all(`SELECT prestador_id, SUM(CASE WHEN tipo='indica' THEN 1 ELSE 0 END) as indica, SUM(CASE WHEN tipo='nao_indica' THEN 1 ELSE 0 END) as nao_indica FROM avaliacoes WHERE condominio_id=? GROUP BY prestador_id`, [req.user.condominio_id], (err, rows) => res.json(err ? [] : rows));
 });
 
+// NOVA: Lista detalhes das avaliações para o Admin ver e apagar
 app.get('/api/prestadores/:id/avaliacoes-detalhe', authenticate, (req, res) => {
   db.all(`SELECT * FROM avaliacoes WHERE prestador_id = ? ORDER BY created_at DESC`, [req.params.id], (err, rows) => res.json(err ? [] : rows));
 });
@@ -210,11 +198,6 @@ app.post('/api/avaliacoes', authenticate, (req, res) => {
   db.run(sql, [req.user.condominio_id, prestador_id, req.user.telefone, tipo, finalMotivos, finalComentario], (err) => res.json(err ? {error:'Erro'} : {success:true}));
 });
 
-// NOVA: Admin apaga avaliação
-app.delete('/api/admin/avaliacoes/:id', authenticate, apenasAdmin, (req, res) => {
-  db.run(`DELETE FROM avaliacoes WHERE id = ?`, [req.params.id], (err) => res.json(err ? {error:'Erro'} : {success:true}));
-});
-
 app.get('/api/prestadores/:id/precos', authenticate, (req, res) => {
   db.all(`SELECT * FROM precos WHERE prestador_id = ? ORDER BY data_referencia DESC`, [req.params.id], (err, rows) => res.json(err ? [] : rows));
 });
@@ -223,12 +206,6 @@ app.post('/api/prestadores/:id/precos', authenticate, (req, res) => {
   const { tipo_preco, valor, data_referencia } = req.body;
   db.run(`INSERT INTO precos (condominio_id, prestador_id, tipo_preco, valor, data_referencia, telefone) VALUES (?, ?, ?, ?, ?, ?)`,
     [req.user.condominio_id, req.params.id, tipo_preco, valor, data_referencia, req.user.telefone], function(err) { res.json(err ? {error:'Erro'} : {success:true, id:this.lastID}); });
-});
-
-// NOVA: Admin edita qualquer preço
-app.patch('/api/admin/precos/:id', authenticate, apenasAdmin, (req, res) => {
-  const { valor, tipo_preco } = req.body;
-  db.run(`UPDATE precos SET valor=?, tipo_preco=? WHERE id=?`, [valor, tipo_preco, req.params.id], (err) => res.json(err ? {error:'Erro'} : {success:true}));
 });
 
 app.delete('/api/precos/:id', authenticate, (req, res) => {
@@ -244,6 +221,14 @@ app.get('/api/categorias/:categoria_id/precos', authenticate, (req, res) => {
   db.all(`SELECT p.nome as prestador_nome, pr.* FROM precos pr JOIN prestadores p ON pr.prestador_id = p.id WHERE p.categoria_principal_id = ? AND pr.valor IS NOT NULL ORDER BY pr.valor ASC`, [req.params.categoria_id], (err, rows) => res.json(err ? [] : rows));
 });
 
+app.get('/api/morador/perfil', authenticate, (req, res) => {
+  db.get(`SELECT nome, unidade, telefone, eh_admin FROM moradores WHERE id = ?`, [req.user.id], (err, row) => res.json(err || !row ? {error:'Não encontrado'} : row));
+});
+
+app.get('/api/morador/avaliacoes', authenticate, (req, res) => {
+  db.all(`SELECT a.*, p.nome as prestador_nome FROM avaliacoes a JOIN prestadores p ON a.prestador_id = p.id WHERE a.morador_telefone = ? ORDER BY a.updated_at DESC`, [req.user.telefone], (err, rows) => res.json(err ? [] : rows));
+});
+
 // ================= ADMIN =================
 app.get('/api/admin/moradores', authenticate, apenasAdmin, (req, res) => {
   db.all(`SELECT * FROM moradores WHERE condominio_id = ? ORDER BY created_at DESC`, [req.user.condominio_id], (err, rows) => res.json(err ? [] : rows));
@@ -253,7 +238,45 @@ app.patch('/api/admin/moradores/:id/status', authenticate, apenasAdmin, (req, re
   db.run(`UPDATE moradores SET status = ? WHERE id = ?`, [req.body.status, req.params.id], (err) => res.json(err ? {error:'Erro'} : {success:true}));
 });
 
-// NOVA: Limpar dados de teste (Preços e Avaliações)
+app.post('/api/admin/categorias', authenticate, apenasAdmin, (req, res) => {
+  const { nome, grupo } = req.body;
+  db.run(`INSERT INTO categorias (condominio_id, nome, grupo, cor) VALUES (?, ?, ?, '#6b7280')`, [req.user.condominio_id, nome, grupo], function(err) {
+    if (err) return res.status(400).json({ error: 'Erro' });
+    res.json({ success: true, id: this.lastID });
+  });
+});
+
+app.delete('/api/admin/categorias/:id', authenticate, apenasAdmin, (req, res) => {
+  db.run(`DELETE FROM categorias WHERE id = ? AND condominio_id = ?`, [req.params.id, req.user.condominio_id], function(err) {
+    if (err) return res.status(500).json({ error: 'Erro' });
+    if (this.changes === 0) return res.status(404).json({ error: 'Não encontrada' });
+    res.json({ success: true });
+  });
+});
+
+// NOVA: Apagar prestador (Admin)
+app.delete('/api/admin/prestadores/:id', authenticate, apenasAdmin, (req, res) => {
+  db.run(`DELETE FROM prestadores WHERE id = ? AND condominio_id = ?`, [req.params.id, req.user.condominio_id], function(err) {
+    if (err) return res.status(500).json({ error: 'Erro' });
+    if (this.changes === 0) return res.status(404).json({ error: 'Não encontrado' });
+    db.run(`DELETE FROM precos WHERE prestador_id = ?`, [req.params.id]);
+    db.run(`DELETE FROM avaliacoes WHERE prestador_id = ?`, [req.params.id]);
+    res.json({ success: true });
+  });
+});
+
+// NOVA: Apagar avaliação específica (Admin)
+app.delete('/api/admin/avaliacoes/:id', authenticate, apenasAdmin, (req, res) => {
+  db.run(`DELETE FROM avaliacoes WHERE id = ?`, [req.params.id], (err) => res.json(err ? {error:'Erro'} : {success:true}));
+});
+
+// NOVA: Editar qualquer preço (Admin)
+app.patch('/api/admin/precos/:id', authenticate, apenasAdmin, (req, res) => {
+  const { valor, tipo_preco } = req.body;
+  db.run(`UPDATE precos SET valor=?, tipo_preco=? WHERE id=?`, [valor, tipo_preco, req.params.id], (err) => res.json(err ? {error:'Erro'} : {success:true}));
+});
+
+// NOVA: Limpar dados de teste (Admin)
 app.post('/api/admin/limpar-testes', authenticate, apenasAdmin, (req, res) => {
   db.run(`DELETE FROM precos WHERE condominio_id = ?`, [req.user.condominio_id]);
   db.run(`DELETE FROM avaliacoes WHERE condominio_id = ?`, [req.user.condominio_id]);
@@ -265,7 +288,7 @@ app.post('/api/admin/importar-prestadores', authenticate, apenasAdmin, (req, res
   let lista = Array.isArray(req.body.prestadores) ? req.body.prestadores : [];
   if (lista.length === 0) return res.status(400).json({ error: 'Lista vazia' });
   const cond = req.user.condominio_id;
-  const resultado = { importados: 0, ja_existiam: 0, erros: [] };
+  const resultado = { importados: 0, ja_existiam: 0, erros: [], categorias_criadas: [] };
 
   db.all(`SELECT id, nome FROM categorias WHERE condominio_id = ?`, [cond], (err, cats) => {
     const mapa = {}; cats.forEach(c => mapa[c.nome.trim().toLowerCase()] = c.id);
@@ -275,7 +298,7 @@ app.post('/api/admin/importar-prestadores', authenticate, apenasAdmin, (req, res
       if (mapa[k]) return resolve(mapa[k]);
       db.run(`INSERT OR IGNORE INTO categorias (condominio_id, nome, grupo, cor) VALUES (?, ?, 'Outros', '#6b7280')`, [cond, nome], function () {
         db.get(`SELECT id FROM categorias WHERE condominio_id = ? AND nome = ?`, [cond, nome], (e, r) => {
-          if (r) mapa[k] = r.id;
+          if (r) { mapa[k] = r.id; resultado.categorias_criadas.push(nome); }
           resolve(r ? r.id : null);
         });
       });
@@ -294,7 +317,5 @@ app.post('/api/admin/importar-prestadores', authenticate, apenasAdmin, (req, res
   });
 });
 
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => console.log(`Servidor rodando na porta ${PORT}`));
+app.get('/api/admin/backup', authenticate, apenasAdmin, (req, res) => {
+  const tabelas = ['categorias', 'prestadores', 'avaliacoes', 'pre
