@@ -4,30 +4,16 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
-const twilio = require('twilio');
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json({ limit: '5mb' }));
-app.use(express.static(path.join(__dirname, 'public'), {
-  setHeaders: (res, path) => {
-    if (path.endsWith('.html')) {
-      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-      res.setHeader('Pragma', 'no-cache');
-      res.setHeader('Expires', '0');
-    }
-  }
-}));
+app.use(express.static(path.join(__dirname, 'public')));
 
-// ================= BANCO DE DADOS =================
 const VOLUME = process.env.RAILWAY_VOLUME_MOUNT_PATH;
 const dbPath = VOLUME ? path.join(VOLUME, 'vizinha.db') : path.join(__dirname, 'vizinha.db');
-
-if (!VOLUME) console.warn('⚠️ ATENÇÃO: sem volume persistente!');
 const db = new sqlite3.Database(dbPath);
-console.log('💾 Banco de dados salvo em:', dbPath);
-
-const SECRET = process.env.JWT_SECRET || 'sua_chave_secreta_muito_forte_aqui';
+const SECRET = process.env.JWT_SECRET || 'chave_secreta_vizinha_2024';
 
 const CATEGORIAS_PADRAO = {
   'Casa e Limpeza': ['Diarista', 'Mensalista', 'Lavanderia', 'Passadeira', 'Organização', 'Deep cleaning', "Limpeza de caixa d'água", 'Limpeza de vidros', 'Cozinheira', 'Dedetizador', 'Caixa de gordura', 'Cortinas'],
@@ -61,6 +47,7 @@ db.serialize(() => {
   const stmt = db.prepare(`INSERT OR IGNORE INTO categorias (condominio_id, nome, grupo, cor) VALUES (1, ?, ?, ?)`);
   Object.entries(CATEGORIAS_PADRAO).forEach(([grupo, nomes]) => nomes.forEach(n => stmt.run(n, grupo, CORES_GRUPO[grupo])));
   stmt.finalize();
+  console.log('✅ Banco de dados inicializado');
 });
 
 const authenticate = (req, res, next) => {
@@ -80,8 +67,7 @@ const apenasAdmin = (req, res, next) => {
 
 const limparTel = t => String(t || '').replace(/\D/g, '');
 
-// ================= ROTAS PÚBLICAS =================
-app.get('/manifest.json', (req, res) => res.json({ name: "Vizinha", short_name: "Vizinha", start_url: "/", display: "standalone", theme_color: "#4FB8B8", icons: [{ src: "/logo.png", sizes: "192x192", type: "image/png" }] }));
+app.get('/manifest.json', (req, res) => res.json({ name: "Vizinha", short_name: "Vizinha", start_url: "/", display: "standalone", theme_color: "#4FB8B8" }));
 
 app.get('/api/health', (req, res) => {
   db.get(`SELECT (SELECT COUNT(*) FROM categorias) categorias, (SELECT COUNT(*) FROM prestadores) prestadores, (SELECT COUNT(*) FROM moradores) moradores`, (err, r) => {
@@ -90,7 +76,6 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// ================= LOGIN =================
 app.post('/api/login/request', (req, res) => {
   const cleanPhone = limparTel(req.body.telefone);
   if (cleanPhone.length < 10) return res.status(400).json({ error: 'Telefone inválido' });
@@ -103,16 +88,9 @@ app.post('/api/login/request', (req, res) => {
       : [`INSERT INTO moradores (condominio_id, telefone, codigo_sms, codigo_expira_em, status) VALUES (1, ?, ?, ?, 'pendente')`, [cleanPhone, code, expires]];
     
     db.run(sql[0], sql[1], (err2) => {
-      if (err2) return res.status(500).json({ error: 'Erro' });
-      if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) {
-        const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-        client.messages.create({ body: `Código Vizinha: ${code}`, from: process.env.TWILIO_PHONE_NUMBER, to: `+55${cleanPhone}` })
-          .then(() => res.json({ message: 'Enviado' }))
-          .catch(() => { console.log(`[FALLBACK] Código: ${code}`); res.json({ message: 'Simulado' }); });
-      } else {
-        console.log(`[FALLBACK] Código: ${code}`);
-        res.json({ message: 'Simulado' });
-      }
+      if (err2) return res.status(500).json({ error: 'Erro no banco' });
+      console.log(`[FALLBACK] Código para ${cleanPhone}: ${code}`);
+      res.json({ message: 'Código enviado (simulado)' });
     });
   });
 });
@@ -122,8 +100,8 @@ app.post('/api/login/verify', (req, res) => {
   const codigo = String(req.body.codigo || '').trim();
   
   if (process.env.ADMIN_CODE && codigo === process.env.ADMIN_CODE) {
-      const token = jwt.sign({ id: 'admin', telefone: '11999999999', eh_admin: true, condominio_id: 1 }, SECRET, { expiresIn: '7d' });
-      return res.json({ token, id: 'admin', telefone: '11999999999', status: 'ativo', eh_admin: true, aceite_termos: true });
+    const token = jwt.sign({ id: 'admin', telefone: '11999999999', eh_admin: true, condominio_id: 1 }, SECRET, { expiresIn: '7d' });
+    return res.json({ token, id: 'admin', telefone: '11999999999', status: 'ativo', eh_admin: true, aceite_termos: true });
   }
 
   db.get(`SELECT * FROM moradores WHERE telefone = ? AND codigo_sms = ?`, [cleanPhone, codigo], (err, row) => {
@@ -137,7 +115,6 @@ app.post('/api/login/verify', (req, res) => {
   });
 });
 
-// ================= DADOS BÁSICOS =================
 app.get('/api/categorias', authenticate, (req, res) => {
   db.all(`SELECT * FROM categorias WHERE condominio_id = ? ORDER BY grupo, nome`, [req.user.condominio_id], (err, rows) => res.json(err ? [] : rows));
 });
@@ -180,12 +157,10 @@ app.patch('/api/prestadores/:id', authenticate, (req, res) => {
   });
 });
 
-// ================= AVALIAÇÕES E PREÇOS =================
 app.get('/api/prestadores/avaliacoes-resumo', authenticate, (req, res) => {
   db.all(`SELECT prestador_id, SUM(CASE WHEN tipo='indica' THEN 1 ELSE 0 END) as indica, SUM(CASE WHEN tipo='nao_indica' THEN 1 ELSE 0 END) as nao_indica FROM avaliacoes WHERE condominio_id=? GROUP BY prestador_id`, [req.user.condominio_id], (err, rows) => res.json(err ? [] : rows));
 });
 
-// NOVA: Lista detalhes das avaliações para o Admin ver e apagar
 app.get('/api/prestadores/:id/avaliacoes-detalhe', authenticate, (req, res) => {
   db.all(`SELECT * FROM avaliacoes WHERE prestador_id = ? ORDER BY created_at DESC`, [req.params.id], (err, rows) => res.json(err ? [] : rows));
 });
@@ -229,7 +204,6 @@ app.get('/api/morador/avaliacoes', authenticate, (req, res) => {
   db.all(`SELECT a.*, p.nome as prestador_nome FROM avaliacoes a JOIN prestadores p ON a.prestador_id = p.id WHERE a.morador_telefone = ? ORDER BY a.updated_at DESC`, [req.user.telefone], (err, rows) => res.json(err ? [] : rows));
 });
 
-// ================= ADMIN =================
 app.get('/api/admin/moradores', authenticate, apenasAdmin, (req, res) => {
   db.all(`SELECT * FROM moradores WHERE condominio_id = ? ORDER BY created_at DESC`, [req.user.condominio_id], (err, rows) => res.json(err ? [] : rows));
 });
@@ -254,7 +228,6 @@ app.delete('/api/admin/categorias/:id', authenticate, apenasAdmin, (req, res) =>
   });
 });
 
-// NOVA: Apagar prestador (Admin)
 app.delete('/api/admin/prestadores/:id', authenticate, apenasAdmin, (req, res) => {
   db.run(`DELETE FROM prestadores WHERE id = ? AND condominio_id = ?`, [req.params.id, req.user.condominio_id], function(err) {
     if (err) return res.status(500).json({ error: 'Erro' });
@@ -265,18 +238,15 @@ app.delete('/api/admin/prestadores/:id', authenticate, apenasAdmin, (req, res) =
   });
 });
 
-// NOVA: Apagar avaliação específica (Admin)
 app.delete('/api/admin/avaliacoes/:id', authenticate, apenasAdmin, (req, res) => {
   db.run(`DELETE FROM avaliacoes WHERE id = ?`, [req.params.id], (err) => res.json(err ? {error:'Erro'} : {success:true}));
 });
 
-// NOVA: Editar qualquer preço (Admin)
 app.patch('/api/admin/precos/:id', authenticate, apenasAdmin, (req, res) => {
   const { valor, tipo_preco } = req.body;
   db.run(`UPDATE precos SET valor=?, tipo_preco=? WHERE id=?`, [valor, tipo_preco, req.params.id], (err) => res.json(err ? {error:'Erro'} : {success:true}));
 });
 
-// NOVA: Limpar dados de teste (Admin)
 app.post('/api/admin/limpar-testes', authenticate, apenasAdmin, (req, res) => {
   db.run(`DELETE FROM precos WHERE condominio_id = ?`, [req.user.condominio_id]);
   db.run(`DELETE FROM avaliacoes WHERE condominio_id = ?`, [req.user.condominio_id]);
@@ -291,6 +261,7 @@ app.post('/api/admin/importar-prestadores', authenticate, apenasAdmin, (req, res
   const resultado = { importados: 0, ja_existiam: 0, erros: [], categorias_criadas: [] };
 
   db.all(`SELECT id, nome FROM categorias WHERE condominio_id = ?`, [cond], (err, cats) => {
+    if (err) return res.status(500).json({ error: 'Erro' });
     const mapa = {}; cats.forEach(c => mapa[c.nome.trim().toLowerCase()] = c.id);
     const garantirCategoria = (nomeCat) => new Promise((resolve) => {
       const nome = String(nomeCat || 'Outra').trim();
@@ -318,4 +289,23 @@ app.post('/api/admin/importar-prestadores', authenticate, apenasAdmin, (req, res
 });
 
 app.get('/api/admin/backup', authenticate, apenasAdmin, (req, res) => {
-  const tabelas = ['categorias', 'prestadores', 'avaliacoes', 'pre
+  const tabelas = ['categorias', 'prestadores', 'avaliacoes', 'precos', 'moradores', 'mensagens'];
+  const out = { gerado_em: new Date().toISOString() };
+  let pend = tabelas.length;
+  tabelas.forEach(t => db.all(`SELECT * FROM ${t}`, (err, rows) => {
+    out[t] = err ? [] : rows.map(r => { const x = { ...r }; delete x.codigo_sms; delete x.codigo_expira_em; return x; });
+    if (--pend === 0) {
+      res.setHeader('Content-Disposition', `attachment; filename="vizinha-backup-${new Date().toISOString().slice(0, 10)}.json"`);
+      res.json(out);
+    }
+  }));
+});
+
+app.get('/api/admin/mensagens', authenticate, apenasAdmin, (req, res) => {
+  db.all(`SELECT m.*, mo.nome as morador_nome, mo.unidade FROM mensagens m LEFT JOIN moradores mo ON m.morador_id = mo.id WHERE m.condominio_id = ? ORDER BY m.created_at DESC`, [req.user.condominio_id], (err, rows) => res.json(err ? [] : rows));
+});
+
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => console.log(`✅ Servidor rodando na porta ${PORT}`));
